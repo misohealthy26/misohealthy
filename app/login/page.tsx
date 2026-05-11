@@ -1,11 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginShell />}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginShell({ children }: { children?: React.ReactNode }) {
+  return (
+    <div className="scene">
+      <nav className="nav">
+        <Link href="/" className="nav-logo" aria-label="back to start">
+          <span className="nav-logo-text">
+            <span className="nav-logo-miso">miso</span>{" "}
+            <span className="nav-logo-healthy">healthy</span>
+          </span>
+        </Link>
+      </nav>
+      <main className="stage">{children}</main>
+    </div>
+  );
+}
+
+function LoginForm() {
   const search = useSearchParams();
   const next = search.get("next") ?? "/";
 
@@ -25,7 +49,6 @@ export default function LoginPage() {
         },
       });
       if (error) throw error;
-      // Supabase redirects the browser to Google; nothing more to do here.
     } catch (err) {
       setError(err instanceof Error ? err.message : "could not start sign-in.");
       setLoading(false);
@@ -33,39 +56,28 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="scene">
-      <nav className="nav">
-        <Link href="/" className="nav-logo" aria-label="back to start">
-          <span className="nav-logo-text">
-            <span className="nav-logo-miso">miso</span>{" "}
-            <span className="nav-logo-healthy">healthy</span>
-          </span>
-        </Link>
-      </nav>
+    <LoginShell>
+      <div className="step">
+        <h1 className="step-title">sign in</h1>
+        <p className="step-sub">
+          We&apos;ll save your recipes and remember you next time.
+        </p>
 
-      <main className="stage">
-        <div className="step">
-          <h1 className="step-title">sign in</h1>
-          <p className="step-sub">
-            We&apos;ll save your recipes and remember you next time.
-          </p>
+        <button
+          type="button"
+          className="btn-google"
+          onClick={signInWithGoogle}
+          disabled={loading}
+        >
+          <GoogleIcon />
+          {loading ? "redirecting…" : "continue with Google"}
+        </button>
 
-          <button
-            type="button"
-            className="btn-google"
-            onClick={signInWithGoogle}
-            disabled={loading}
-          >
-            <GoogleIcon />
-            {loading ? "redirecting…" : "continue with Google"}
-          </button>
-
-          <div className="auth-message-slot">
-            {error && <p className="auth-message is-error">{error}</p>}
-          </div>
+        <div className="auth-message-slot">
+          {error && <p className="auth-message is-error">{error}</p>}
         </div>
-      </main>
-    </div>
+      </div>
+    </LoginShell>
   );
 }
 
