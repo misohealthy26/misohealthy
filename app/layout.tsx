@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Fraunces, Nunito } from "next/font/google";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -9,21 +9,21 @@ const fraunces = Fraunces({
   axes: ["SOFT", "opsz"],
 });
 
-const inter = Inter({
+const nunito = Nunito({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-nunito",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "miso healthy — make any dish miso healthy",
+  title: "miso healthy — make any dish healthier",
   description:
-    "Tell us what you're craving. We turn it into a healthier version of itself, with the nutrition side-by-side.",
+    "Enter a dish you're craving and miso healthy will generate a science-backed option with side-by-side nutrition. Make custom swaps and superfood upgrades.",
   metadataBase: new URL("https://misohealthy.app"),
   openGraph: {
     title: "miso healthy",
     description:
-      "AI-powered recipe transformation — make any dish miso healthy.",
+      "Make any dish healthier. Science-backed swaps, side-by-side nutrition, superfood add-ons.",
     url: "https://misohealthy.app",
     siteName: "miso healthy",
     type: "website",
@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${nunito.variable}`}>
       <body>{children}</body>
     </html>
   );

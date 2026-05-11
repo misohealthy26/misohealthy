@@ -1,20 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import type {
+  HealthGoal,
+  HealthyRecipe,
+  IngredientLine,
+  NutritionRow,
+  SubRecipe,
+} from "@/lib/types";
 
-type Recipe = {
+// Tolerant payload: new rows have healthy-only; legacy rows may include
+// an `original` field with the old string[] ingredients shape.
+type Payload = {
+  healthy?: HealthyRecipe | LegacyRecipe;
+  nutrition?: NutritionRow[];
+  healthGoal?: HealthGoal; // legacy rows (pre-multi-select)
+  healthGoals?: HealthGoal[];
+};
+
+type LegacyRecipe = {
   title: string;
   ingredients: string[];
   method: string[];
 };
-type NutritionRow = { label: string; original: string; healthy: string };
-type Swap = { from: string; to: string; why: string };
-type Payload = {
-  original: Recipe;
-  healthy: Recipe;
-  nutrition: NutritionRow[];
-  swaps: Swap[];
-};
+
 type Saved = {
   id: string;
   dish: string;
@@ -22,6 +31,19 @@ type Saved = {
   payload: Payload;
   created_at: string;
 };
+
+function isIngredientLine(item: unknown): item is IngredientLine {
+  return typeof item === "object" && item !== null && "text" in item;
+}
+
+function normalizeIngredients(
+  recipe: HealthyRecipe | LegacyRecipe | undefined,
+): IngredientLine[] {
+  if (!recipe) return [];
+  return recipe.ingredients.map((ing) =>
+    isIngredientLine(ing) ? ing : { text: ing as string },
+  );
+}
 
 export default function SavedList({ recipes }: { recipes: Saved[] }) {
   const [open, setOpen] = useState<string | null>(null);
@@ -51,6 +73,8 @@ export default function SavedList({ recipes }: { recipes: Saved[] }) {
           day: "numeric",
           year: "numeric",
         });
+        const healthy = r.payload.healthy;
+        const ingredients = normalizeIngredients(healthy);
         return (
           <article key={r.id} className="saved-card">
             <button
@@ -60,10 +84,15 @@ export default function SavedList({ recipes }: { recipes: Saved[] }) {
               aria-expanded={open === r.id}
             >
               <div>
-                <h2 className="saved-card-title">{r.payload.healthy.title}</h2>
+                <h2 className="saved-card-title">
+                  {healthy?.title ?? r.dish}
+                </h2>
                 <div className="saved-card-meta">
                   <span>{r.dish}</span>
                   {r.vegetarian && <span className="saved-card-tag">vegetarian</span>}
+                  {(r.payload.healthGoals ?? (r.payload.healthGoal ? [r.payload.healthGoal] : [])).map((g) => (
+                    <span key={g} className="saved-card-tag">{g}</span>
+                  ))}
                   <span className="saved-card-date">{date}</span>
                 </div>
               </div>
@@ -72,13 +101,13 @@ export default function SavedList({ recipes }: { recipes: Saved[] }) {
               </span>
             </button>
 
-            {open === r.id && (
+            {open === r.id && healthy && (
               <div className="saved-card-body">
-                <div className="saved-card-cols">
-                  <RecipeBlock label="original" recipe={r.payload.original} />
-                  <RecipeBlock label="healthy" recipe={r.payload.healthy} />
-                </div>
-                {r.payload.nutrition?.length > 0 && (
+                <SavedRecipeBlock
+                  recipe={healthy}
+                  ingredients={ingredients}
+                />
+                {r.payload.nutrition && r.payload.nutrition.length > 0 && (
                   <div className="saved-card-nut">
                     {r.payload.nutrition.map((n) => (
                       <div key={n.label} className="saved-card-nut-cell">
@@ -111,21 +140,65 @@ export default function SavedList({ recipes }: { recipes: Saved[] }) {
   );
 }
 
-function RecipeBlock({ label, recipe }: { label: string; recipe: Recipe }) {
+function SavedRecipeBlock({
+  recipe,
+  ingredients,
+}: {
+  recipe: HealthyRecipe | LegacyRecipe;
+  ingredients: IngredientLine[];
+}) {
+  const servings =
+    "servings" in recipe && typeof recipe.servings === "number"
+      ? recipe.servings
+      : null;
   return (
-    <div className={`saved-block is-${label}`}>
-      <p className="saved-block-label">{label}</p>
+    <div className="saved-block is-healthy">
+      <p className="saved-block-label">miso healthy</p>
       <h3 className="saved-block-title">{recipe.title}</h3>
+      {servings !== null && (
+        <p className="saved-block-servings">serves {servings}</p>
+      )}
       <h4>ingredients</h4>
       <ul>
-        {recipe.ingredients.map((ing, i) => (
-          <li key={i}>{ing}</li>
+        {ingredients.map((ing, i) => (
+          <li key={i} className={ing.superfood ? "is-superfood" : undefined}>
+            <span>{ing.text}</span>
+            {ing.superfood && (
+              <span className="ing-pill ing-pill-superfood">superfood</span>
+            )}
+            {ing.goalTags?.map((g) => (
+              <span key={g} className="ing-pill ing-pill-goal">
+                {g}
+              </span>
+            ))}
+            {ing.swap?.homemade && (
+              <SubRecipeBlock sub={ing.swap.homemade} />
+            )}
+          </li>
         ))}
       </ul>
       <h4>method</h4>
       <ol>
         {recipe.method.map((step, i) => (
           <li key={i}>{step.replace(/^\s*\d+[.)]\s*/, "")}</li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function SubRecipeBlock({ sub }: { sub: SubRecipe }) {
+  return (
+    <div className="sub-recipe">
+      <div className="sub-recipe-name">{sub.name}</div>
+      <ul className="sub-recipe-ings">
+        {sub.ingredients.map((ing, i) => (
+          <li key={i}>{ing}</li>
+        ))}
+      </ul>
+      <ol className="sub-recipe-method">
+        {sub.method.map((step, i) => (
+          <li key={i}>{step}</li>
         ))}
       </ol>
     </div>

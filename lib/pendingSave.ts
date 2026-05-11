@@ -1,9 +1,12 @@
+import { isHealthGoal, type HealthGoal } from "@/lib/types";
+
 export const PENDING_SAVE_KEY = "miso:pendingSave";
 export const PENDING_SAVE_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
 
 export type PendingSave = {
   dish: string;
   vegetarian: boolean;
+  healthGoals: HealthGoal[];
   payload: unknown;
   at: number;
 };
@@ -23,6 +26,9 @@ export function readPendingSave(): PendingSave | null {
       !parsed ||
       typeof parsed.dish !== "string" ||
       typeof parsed.vegetarian !== "boolean" ||
+      !Array.isArray(parsed.healthGoals) ||
+      parsed.healthGoals.length === 0 ||
+      !parsed.healthGoals.every(isHealthGoal) ||
       typeof parsed.at !== "number" ||
       !parsed.payload ||
       typeof parsed.payload !== "object"

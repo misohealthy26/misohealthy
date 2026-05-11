@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM_PROMPT } from "@/lib/system-prompt";
 import { consumeRateLimit, getClientIp } from "@/lib/rate-limit";
+import { isHealthGoal } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -9,7 +10,11 @@ export const maxDuration = 60;
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_SECONDS = 60 * 60; // 1 hour
 
-type RequestBody = { dish?: unknown; vegetarian?: unknown };
+type RequestBody = {
+  dish?: unknown;
+  vegetarian?: unknown;
+  healthGoals?: unknown;
+};
 
 export async function POST(request: Request) {
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -28,10 +33,20 @@ export async function POST(request: Request) {
 
   const dish = typeof body.dish === "string" ? body.dish.trim() : "";
   const vegetarian = body.vegetarian === true;
+  const healthGoals = Array.isArray(body.healthGoals)
+    ? body.healthGoals.filter(isHealthGoal)
+    : [];
 
   if (!dish || dish.length > 200) {
     return Response.json(
       { error: "Please enter a dish name (under 200 characters)." },
+      { status: 400 },
+    );
+  }
+
+  if (healthGoals.length === 0) {
+    return Response.json(
+      { error: "Please pick at least one health goal." },
       { status: 400 },
     );
   }
@@ -66,16 +81,19 @@ export async function POST(request: Request) {
     );
   }
 
-  const userMessage = vegetarian
-    ? `Dish the user is craving: "${dish}". Make the healthy version VEGETARIAN — no meat, poultry, or seafood. Generate the original baseline + miso healthy version + nutrition + applied swaps as JSON only.`
-    : `Dish the user is craving: "${dish}". Generate the original baseline + miso healthy version + nutrition + applied swaps as JSON only.`;
+  const vegetarianDirective = vegetarian
+    ? ' Make the healthy version VEGETARIAN — no meat, poultry, or seafood.'
+    : '';
+  const goalsLabel =
+    healthGoals.length === 1 ? healthGoals[0] : healthGoals.join(", ");
+  const userMessage = `Dish the user is craving: "${dish}". Health ${healthGoals.length === 1 ? "goal" : "goals"}: "${goalsLabel}".${vegetarianDirective} Generate the original baseline + miso healthy version + nutrition + applied swaps as JSON only, in the exact shape defined in the system prompt.`;
 
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
   try {
     const completion = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 4000,
+      max_tokens: 8000,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }],
     });

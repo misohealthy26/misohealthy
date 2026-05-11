@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { isHealthGoal } from "@/lib/types";
 
 export const runtime = "nodejs";
 
 type SaveBody = {
   dish?: unknown;
   vegetarian?: unknown;
+  healthGoals?: unknown;
   payload?: unknown;
 };
 
@@ -48,6 +50,9 @@ export async function POST(request: Request) {
 
   const dish = typeof body.dish === "string" ? body.dish.trim() : "";
   const vegetarian = body.vegetarian === true;
+  const healthGoals = Array.isArray(body.healthGoals)
+    ? body.healthGoals.filter(isHealthGoal)
+    : [];
   const payload = body.payload;
 
   if (!dish || dish.length > 200) {
@@ -57,13 +62,32 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing payload." }, { status: 400 });
   }
 
+  // Persist healthy-only. Drop `original` defensively even if the client sent
+  // it. Carry healthGoals inside the payload JSON (no column migration needed).
+  const incoming = payload as Record<string, unknown>;
+  const persistedPayload = {
+    healthy: incoming.healthy,
+    nutrition: incoming.nutrition,
+    nutritionMeta: incoming.nutritionMeta,
+    swaps: incoming.swaps,
+    healthGoals,
+    vegetarian,
+  };
+
+  if (!persistedPayload.healthy || typeof persistedPayload.healthy !== "object") {
+    return NextResponse.json(
+      { error: "Payload is missing the healthy recipe." },
+      { status: 400 },
+    );
+  }
+
   const { data, error } = await supabase
     .from("saved_recipes")
     .insert({
       user_id: user.id,
       dish,
       vegetarian,
-      payload,
+      payload: persistedPayload,
     })
     .select("id, dish, vegetarian, created_at")
     .single();

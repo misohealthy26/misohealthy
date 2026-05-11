@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PENDING_SAVE_KEY } from "@/lib/pendingSave";
+import type { HealthGoal } from "@/lib/types";
 
 type Props = {
   dish: string;
   vegetarian: boolean;
+  healthGoals: HealthGoal[];
   payload: unknown;
   signedIn: boolean;
   autoSaveOnMount?: boolean;
@@ -15,6 +17,7 @@ type Props = {
 export default function HeartButton({
   dish,
   vegetarian,
+  healthGoals,
   payload,
   signedIn,
   autoSaveOnMount,
@@ -31,7 +34,7 @@ export default function HeartButton({
       const res = await fetch("/api/recipes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dish, vegetarian, payload }),
+        body: JSON.stringify({ dish, vegetarian, healthGoals, payload }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "could not save.");
@@ -41,7 +44,7 @@ export default function HeartButton({
     } finally {
       setSaving(false);
     }
-  }, [dish, vegetarian, payload]);
+  }, [dish, vegetarian, healthGoals, payload]);
 
   function handleClick() {
     if (saved || saving) return;
@@ -50,7 +53,13 @@ export default function HeartButton({
       try {
         localStorage.setItem(
           PENDING_SAVE_KEY,
-          JSON.stringify({ dish, vegetarian, payload, at: Date.now() }),
+          JSON.stringify({
+            dish,
+            vegetarian,
+            healthGoals,
+            payload,
+            at: Date.now(),
+          }),
         );
       } catch {
         // ignore storage failures (private mode, quota) — login still works

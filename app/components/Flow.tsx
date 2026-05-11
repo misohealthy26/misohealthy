@@ -4,6 +4,19 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import NavAuth from "./NavAuth";
 import HeartButton from "./HeartButton";
 import { clearPendingSave, readPendingSave } from "@/lib/pendingSave";
+import {
+  HEALTH_GOALS,
+  type ConvertResponse,
+  type HealthGoal,
+  type HealthyRecipe,
+  type IngredientLine,
+  type SubRecipe,
+} from "@/lib/types";
+import {
+  SUPERFOODS,
+  applySuperfood,
+  findSuperfood,
+} from "@/lib/superfoods";
 
 // useLayoutEffect runs after DOM commit but before browser paint — perfect for
 // reading localStorage and restoring state without a visible flash. Fall back
@@ -11,29 +24,20 @@ import { clearPendingSave, readPendingSave } from "@/lib/pendingSave";
 const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-type Recipe = {
-  title: string;
-  ingredients: string[];
-  method: string[];
-};
-type NutritionRow = { label: string; original: string; healthy: string };
-type Swap = { from: string; to: string; why: string };
-type ConvertResponse = {
-  original: Recipe;
-  healthy: Recipe;
-  nutrition: NutritionRow[];
-  swaps: Swap[];
-};
-
 type FormData = {
   dish: string;
-  vegetarian: boolean;
+  healthGoals: HealthGoal[];
 };
 
 type Phase =
   | { kind: "step"; index: 0 | 1 }
   | { kind: "cooking" }
-  | { kind: "summary"; data: ConvertResponse }
+  | {
+      kind: "summary";
+      data: ConvertResponse;
+      vegetarian: boolean;
+      addedSuperfoodIds: string[];
+    }
   | { kind: "error"; message: string };
 
 const TOTAL_STEPS = 2;
@@ -55,16 +59,20 @@ export default function Flow({
   authEnabled: boolean;
 }) {
   const [phase, setPhase] = useState<Phase>({ kind: "step", index: 0 });
-  const [data, setData] = useState<FormData>({ dish: "", vegetarian: false });
+  const [data, setData] = useState<FormData>({ dish: "", healthGoals: [] });
   const [autoSavePending, setAutoSavePending] = useState(false);
 
   useIsoLayoutEffect(() => {
     const pending = readPendingSave();
     if (!pending) return;
-    // Restoring from localStorage on mount — happens before paint so no flash.
     /* eslint-disable react-hooks/set-state-in-effect */
-    setData({ dish: pending.dish, vegetarian: pending.vegetarian });
-    setPhase({ kind: "summary", data: pending.payload as ConvertResponse });
+    setData({ dish: pending.dish, healthGoals: pending.healthGoals });
+    setPhase({
+      kind: "summary",
+      data: pending.payload as ConvertResponse,
+      vegetarian: pending.vegetarian,
+      addedSuperfoodIds: [],
+    });
     if (user) {
       setAutoSavePending(true);
       clearPendingSave();
@@ -77,9 +85,8 @@ export default function Flow({
     if (phase.kind !== "step") return;
     if (phase.index < TOTAL_STEPS - 1) {
       setPhase({ kind: "step", index: (phase.index + 1) as 0 | 1 });
-    } else {
-      submit();
     }
+    // step 1 (health goal) submits on its own via onChoose.
   }
 
   function goBack() {
@@ -92,27 +99,32 @@ export default function Flow({
   }
 
   function restart() {
-    setData({ dish: "", vegetarian: false });
+    setData({ dish: "", healthGoals: [] });
     setPhase({ kind: "step", index: 0 });
     setAutoSavePending(false);
     clearPendingSave();
   }
 
-  async function submit(overrideVeg?: boolean) {
-    const vegetarian = overrideVeg ?? data.vegetarian;
-    if (overrideVeg !== undefined) {
-      setData((d) => ({ ...d, vegetarian }));
-    }
+  async function generate(goals: HealthGoal[], vegetarian: boolean) {
     setPhase({ kind: "cooking" });
     try {
       const res = await fetch("/api/convert", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dish: data.dish.trim(), vegetarian }),
+        body: JSON.stringify({
+          dish: data.dish.trim(),
+          healthGoals: goals,
+          vegetarian,
+        }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Something went wrong.");
-      setPhase({ kind: "summary", data: json });
+      setPhase({
+        kind: "summary",
+        data: json,
+        vegetarian,
+        addedSuperfoodIds: [],
+      });
     } catch (err) {
       setPhase({
         kind: "error",
@@ -121,10 +133,34 @@ export default function Flow({
     }
   }
 
+  function submit(goals: HealthGoal[]) {
+    setData((d) => ({ ...d, healthGoals: goals }));
+    void generate(goals, false);
+  }
+
+  function regenerateWithVegetarian(nextVeg: boolean) {
+    if (data.healthGoals.length === 0) return;
+    void generate(data.healthGoals, nextVeg);
+  }
+
+  function addSuperfood(id: string) {
+    setPhase((p) => {
+      if (p.kind !== "summary") return p;
+      const entry = findSuperfood(id);
+      if (!entry) return p;
+      if (p.addedSuperfoodIds.includes(id)) return p;
+      return {
+        ...p,
+        data: { ...p.data, healthy: applySuperfood(p.data.healthy, entry) },
+        addedSuperfoodIds: [...p.addedSuperfoodIds, id],
+      };
+    });
+  }
+
   const canAdvance = (() => {
     if (phase.kind !== "step") return false;
     if (phase.index === 0) return data.dish.trim().length > 0;
-    return true;
+    return false; // step 1 advances itself when user picks a goal
   })();
 
   return (
@@ -159,24 +195,25 @@ export default function Flow({
 
       {phase.kind === "step" && (
         <>
-        <main className="stage">
-          {phase.index === 0 && (
-            <DishStep
-              value={data.dish}
-              onChange={(dish) => setData((d) => ({ ...d, dish }))}
-              onSubmit={goNext}
-              canAdvance={canAdvance}
-            />
-          )}
-          {phase.index === 1 && (
-            <VegetarianStep
-              value={data.vegetarian}
-              onChoose={(v) => submit(v)}
-              onBack={goBack}
-            />
-          )}
-        </main>
-        <MeetSection />
+          {phase.index === 0 && <Hero />}
+          {phase.index === 0 && <ThreeStepsSection />}
+          <main className="stage">
+            {phase.index === 0 && (
+              <DishStep
+                value={data.dish}
+                onChange={(dish) => setData((d) => ({ ...d, dish }))}
+                onSubmit={goNext}
+                canAdvance={canAdvance}
+              />
+            )}
+            {phase.index === 1 && (
+              <HealthGoalStep
+                value={data.healthGoals}
+                onSubmit={submit}
+                onBack={goBack}
+              />
+            )}
+          </main>
         </>
       )}
 
@@ -189,13 +226,19 @@ export default function Flow({
       {phase.kind === "error" && (
         <main className="stage">
           <div className="error-card">
-            <div className="error-card-title">that didn't work.</div>
+            <div className="error-card-title">that didn&apos;t work.</div>
             <div className="error-card-desc">{phase.message}</div>
             <div className="step-actions" style={{ marginTop: 8 }}>
               <button className="btn-ghost" onClick={restart}>
                 start over
               </button>
-              <button className="btn-primary" onClick={() => submit()}>
+              <button
+                className="btn-primary"
+                onClick={() =>
+                  data.healthGoals.length > 0 &&
+                  void generate(data.healthGoals, false)
+                }
+              >
                 try again
               </button>
             </div>
@@ -203,17 +246,93 @@ export default function Flow({
         </main>
       )}
 
-      {phase.kind === "summary" && (
+      {phase.kind === "summary" && data.healthGoals.length > 0 && (
         <Summary
           result={phase.data}
-          vegetarian={data.vegetarian}
+          vegetarian={phase.vegetarian}
+          healthGoals={data.healthGoals}
           dish={data.dish}
+          addedSuperfoodIds={phase.addedSuperfoodIds}
           user={user}
           authEnabled={authEnabled}
           autoSaveOnMount={autoSavePending}
+          onToggleVegetarian={regenerateWithVegetarian}
+          onAddSuperfood={addSuperfood}
+          onRestart={restart}
         />
       )}
     </div>
+  );
+}
+
+/* ─────────── hero / three steps ─────────── */
+
+function Hero() {
+  return (
+    <section className="hero">
+      <h1 className="hero-title">
+        Make any dish <em>healthier</em>.
+      </h1>
+      <p className="hero-sub">
+        Enter a dish you&apos;re craving and miso healthy will generate a
+        science-backed option with side-by-side nutrition. Make custom swaps
+        and superfood upgrades.
+      </p>
+      <ul className="hero-pills">
+        <li>Science-backed recipes</li>
+        <li>Make your own swaps</li>
+        <li>Superfood add-ons</li>
+        <li>Side-by-side nutrition</li>
+      </ul>
+    </section>
+  );
+}
+
+function ThreeStepsSection() {
+  return (
+    <section className="meet">
+      <div className="meet-content">
+        <h2 className="meet-title">
+          three steps to a <em>healthier</em> dish.
+        </h2>
+        <div className="meet-steps">
+          <div className="meet-step">
+            <div className="meet-step-num">01</div>
+            <div className="meet-step-body">
+              <h3 className="meet-step-title">
+                Tell us what you&apos;re craving
+              </h3>
+              <p className="meet-step-desc">
+                Type any dish — beef stroganoff, matzo ball soup, hamburger.
+              </p>
+            </div>
+          </div>
+          <div className="meet-step">
+            <div className="meet-step-num">02</div>
+            <div className="meet-step-body">
+              <h3 className="meet-step-title">What are your health goals?</h3>
+              <p className="meet-step-desc">
+                Pick from weight, heart health, blood sugar, energy, gut
+                health, immunity, bone &amp; muscle, cognitive, or
+                inflammation. We&apos;ll lean into swaps that fit and tag them
+                on the recipe.
+              </p>
+            </div>
+          </div>
+          <div className="meet-step">
+            <div className="meet-step-num">03</div>
+            <div className="meet-step-body">
+              <h3 className="meet-step-title">We make it healthier</h3>
+              <p className="meet-step-desc">
+                Smart, science-backed recipes from medical experts,
+                nutritionists, and food industry pros — drawing from cuisines
+                around the world.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -243,7 +362,7 @@ function DishStep({
         if (canAdvance) onSubmit();
       }}
     >
-      <h1 className="step-title">what are you craving?</h1>
+      <h2 className="step-title">what are you craving?</h2>
       <input
         ref={inputRef}
         className="step-input"
@@ -265,43 +384,61 @@ function DishStep({
   );
 }
 
-function VegetarianStep({
+function HealthGoalStep({
   value,
-  onChoose,
+  onSubmit,
   onBack,
 }: {
-  value: boolean;
-  onChoose: (v: boolean) => void;
+  value: HealthGoal[];
+  onSubmit: (g: HealthGoal[]) => void;
   onBack: () => void;
 }) {
+  const [selected, setSelected] = useState<HealthGoal[]>(value);
+
+  function toggle(g: HealthGoal) {
+    setSelected((curr) =>
+      curr.includes(g) ? curr.filter((x) => x !== g) : [...curr, g],
+    );
+  }
+
   return (
     <div className="step">
-      <h1 className="step-title">make it vegetarian?</h1>
+      <h2 className="step-title">what are your health goals?</h2>
       <p className="step-sub">
-        We'll swap the meat for something just as satisfying.
+        Pick one or more. We&apos;ll lean into swaps that fit and tag them on
+        the recipe.
       </p>
-      <div className="chips">
-        <button
-          type="button"
-          className={`chip${value ? " is-selected" : ""}`}
-          onClick={() => onChoose(true)}
-        >
-          yes — make it vegetarian
-        </button>
-        <button
-          type="button"
-          className={`chip${!value ? " is-selected" : ""}`}
-          onClick={() => onChoose(false)}
-        >
-          no — keep it as-is
-        </button>
+      <div className="chips chips-grid">
+        {HEALTH_GOALS.map((g) => (
+          <button
+            key={g}
+            type="button"
+            className={`chip${selected.includes(g) ? " is-selected" : ""}`}
+            onClick={() => toggle(g)}
+            aria-pressed={selected.includes(g)}
+          >
+            {g}
+          </button>
+        ))}
       </div>
       <div className="step-actions">
         <button className="btn-ghost" onClick={onBack}>
           back
         </button>
+        <button
+          type="button"
+          className="btn-primary"
+          disabled={selected.length === 0}
+          onClick={() => onSubmit(selected)}
+        >
+          cook it <Arrow />
+        </button>
       </div>
-      <div className="hint">tap one to cook</div>
+      <div className="hint">
+        {selected.length === 0
+          ? "pick one or more"
+          : `${selected.length} selected — tap "cook it" when ready`}
+      </div>
     </div>
   );
 }
@@ -326,99 +463,6 @@ function Cooking({ dish }: { dish: string }) {
   );
 }
 
-function MeetSection() {
-  return (
-    <section className="meet">
-      <div className="meet-mockup">
-        <div className="meet-mockup-frame">
-          <div className="meet-mockup-bar">
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="meet-mockup-stage">
-            {/* phase 1 — typing */}
-            <div className="meet-screen meet-screen-input">
-              <div className="meet-screen-title">what are you craving?</div>
-              <div className="meet-screen-input-bar">
-                <span className="meet-screen-typed">
-                  <span className="meet-screen-typed-text">mac and cheese</span>
-                  <span className="meet-screen-caret" />
-                </span>
-              </div>
-            </div>
-
-            {/* phase 2 — thinking */}
-            <div className="meet-screen meet-screen-cooking">
-              <SteamingPot />
-              <div className="meet-screen-cook-line">thinking it through…</div>
-            </div>
-
-            {/* phase 3 — result */}
-            <div className="meet-screen meet-screen-result">
-              <div className="meet-screen-res-title">
-                mac &amp; cheese, <em>healthier</em>
-              </div>
-              <div className="meet-screen-res-grid">
-                <div className="meet-screen-res-cell">
-                  <div className="meet-screen-res-tag is-orig">original</div>
-                  <div className="meet-screen-res-stat">920 cal</div>
-                  <div className="meet-screen-res-meta">pasta · heavy cream</div>
-                </div>
-                <div className="meet-screen-res-cell is-healthy">
-                  <div className="meet-screen-res-tag is-healthy">healthy</div>
-                  <div className="meet-screen-res-stat">480 cal</div>
-                  <div className="meet-screen-res-meta">chickpea · RFH sauce</div>
-                </div>
-              </div>
-              <div className="meet-screen-res-bar">
-                <span>+ protein</span>
-                <span>+ fiber</span>
-                <span>− sat fat</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="meet-content">
-        <h2 className="meet-title">
-          three steps to a <em>healthier</em> dish.
-        </h2>
-        <div className="meet-steps">
-          <div className="meet-step">
-            <div className="meet-step-num">01</div>
-            <div className="meet-step-body">
-              <h3 className="meet-step-title">tell us what you're craving</h3>
-              <p className="meet-step-desc">
-                Type any dish — pad thai, lasagna, mac and cheese. We find the most common version first.
-              </p>
-            </div>
-          </div>
-          <div className="meet-step">
-            <div className="meet-step-num">02</div>
-            <div className="meet-step-body">
-              <h3 className="meet-step-title">we make it healthier</h3>
-              <p className="meet-step-desc">
-                Smart, science-backed swaps from Dr. Felicia Stoler's Recipe-For-Health ruleset. Real ingredients, no extreme moves.
-              </p>
-            </div>
-          </div>
-          <div className="meet-step">
-            <div className="meet-step-num">03</div>
-            <div className="meet-step-body">
-              <h3 className="meet-step-title">see the proof</h3>
-              <p className="meet-step-desc">
-                Side-by-side nutrition — calories, protein, fiber, all of it.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function SteamingPot() {
   return (
     <svg
@@ -428,7 +472,6 @@ function SteamingPot() {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
     >
-      {/* steam wisps */}
       <g
         stroke="currentColor"
         strokeWidth="2.2"
@@ -445,8 +488,6 @@ function SteamingPot() {
           <path d="M 70 60 Q 66 50 72 42 Q 78 34 72 24" />
         </g>
       </g>
-
-      {/* soft pot glow */}
       <ellipse
         className="pot-glow"
         cx="50"
@@ -455,8 +496,6 @@ function SteamingPot() {
         ry="6"
         fill="currentColor"
       />
-
-      {/* pot handles */}
       <path
         d="M 16 76 Q 8 76 8 82"
         stroke="currentColor"
@@ -471,8 +510,6 @@ function SteamingPot() {
         fill="none"
         strokeLinecap="round"
       />
-
-      {/* pot body */}
       <path
         d="M 16 70 L 20 92 Q 20 98 26 98 L 74 98 Q 80 98 80 92 L 84 70 Z"
         fill="rgba(255, 253, 245, 0.7)"
@@ -480,8 +517,6 @@ function SteamingPot() {
         strokeWidth="2.4"
         strokeLinejoin="round"
       />
-
-      {/* pot rim shine */}
       <line
         x1="22"
         y1="73"
@@ -500,92 +535,181 @@ function SteamingPot() {
 function Summary({
   result,
   vegetarian,
+  healthGoals,
   dish,
+  addedSuperfoodIds,
   user,
   authEnabled,
   autoSaveOnMount,
+  onToggleVegetarian,
+  onAddSuperfood,
+  onRestart,
 }: {
   result: ConvertResponse;
   vegetarian: boolean;
+  healthGoals: HealthGoal[];
   dish: string;
+  addedSuperfoodIds: string[];
   user: FlowUser;
   authEnabled: boolean;
   autoSaveOnMount?: boolean;
+  onToggleVegetarian: (next: boolean) => void;
+  onAddSuperfood: (id: string) => void;
+  onRestart: () => void;
 }) {
+  const [superfoodModalOpen, setSuperfoodModalOpen] = useState(false);
+
+  // Persisted payload: healthy-only (drop the original from saved storage).
+  const savedPayload = {
+    healthy: result.healthy,
+    nutrition: result.nutrition,
+    nutritionMeta: result.nutritionMeta,
+    swaps: result.swaps,
+  };
+
   return (
-    <div className="summary">
-      <div className="summary-head">
-        <div>
-          <h1 className="summary-title">{result.healthy.title}</h1>
-          {vegetarian && (
+    <main className="stage stage-summary">
+      <div className="summary">
+        <div className="summary-head">
+          <div>
+            <h1 className="summary-title">{result.healthy.title}</h1>
             <div className="summary-tags">
-              <span className="summary-tag">vegetarian</span>
+              {healthGoals.map((g) => (
+                <span key={g} className="summary-tag summary-tag-goal">
+                  {g}
+                </span>
+              ))}
+              {vegetarian && (
+                <span className="summary-tag">vegetarian</span>
+              )}
+              {result.healthy.servings != null && (
+                <span className="summary-tag">
+                  serves {result.healthy.servings}
+                </span>
+              )}
             </div>
+          </div>
+          {authEnabled && (
+            <HeartButton
+              dish={dish}
+              vegetarian={vegetarian}
+              healthGoals={healthGoals}
+              payload={savedPayload}
+              signedIn={!!user}
+              autoSaveOnMount={autoSaveOnMount}
+            />
           )}
         </div>
-        {authEnabled && (
-          <HeartButton
-            dish={dish}
-            vegetarian={vegetarian}
-            payload={result}
-            signedIn={!!user}
-            autoSaveOnMount={autoSaveOnMount}
-          />
-        )}
-      </div>
 
-      <div className="summary-grid">
-        <RecipeCard kind="original" recipe={result.original} />
-        <RecipeCard kind="healthy" recipe={result.healthy} />
-      </div>
+        <div className="summary-controls">
+          <button
+            type="button"
+            className={`toggle-pill${vegetarian ? " is-on" : ""}`}
+            onClick={() => onToggleVegetarian(!vegetarian)}
+            title="re-cook the healthy version with no meat, poultry, or seafood"
+          >
+            <span className="toggle-pill-dot" />
+            {vegetarian ? "vegetarian" : "make it vegetarian"}
+          </button>
+          <button
+            type="button"
+            className="add-superfood-btn"
+            onClick={() => setSuperfoodModalOpen(true)}
+          >
+            + add a superfood
+          </button>
+        </div>
 
-      {result.nutrition?.length > 0 && (
-        <div className="nutrition-card">
-          <h4>nutrition per serving</h4>
-          <div className="nutrition-grid">
-            {result.nutrition.map((row) => (
-              <div key={row.label} className="nutrition-cell">
-                <div className="nutrition-cell-label">{row.label}</div>
-                <div className="nutrition-cell-values">
-                  <span className="v is-original">{row.original}</span>
-                  <span className="nutrition-arrow">→</span>
-                  <span className="v">{row.healthy}</span>
+        <div className="summary-grid">
+          <OriginalCard recipe={result.original} />
+          <HealthyCard recipe={result.healthy} />
+        </div>
+
+        {result.nutrition?.length > 0 && (
+          <div className="nutrition-card">
+            <h4>nutrition per serving</h4>
+            <div className="nutrition-grid">
+              {result.nutrition.map((row) => (
+                <div key={row.label} className="nutrition-cell">
+                  <div className="nutrition-cell-label">{row.label}</div>
+                  <div className="nutrition-cell-values">
+                    <span className="v is-original">{row.original}</span>
+                    <span className="nutrition-arrow">→</span>
+                    <span className="v">{row.healthy}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <p className="nutrition-source">
+              {result.nutritionMeta?.source === "usda"
+                ? "Powered by USDA FoodData Central — per-serving estimates."
+                : "Estimated from a nutrition reference — values are approximate."}
+            </p>
           </div>
-        </div>
-      )}
+        )}
 
-      {result.swaps?.length > 0 && (
-        <div className="swaps-card">
-          <h4>smart swaps applied</h4>
-          <div className="swap-list">
-            {result.swaps.map((s, i) => (
-              <div key={i} className="swap-item">
-                <div className="swap-from">{s.from}</div>
-                <div className="swap-to">→ {s.to}</div>
-                <div className="swap-why">{s.why}</div>
-              </div>
-            ))}
+        {result.swaps?.length > 0 && (
+          <div className="swaps-card">
+            <h4>smart swaps applied</h4>
+            <div className="swap-list">
+              {result.swaps.map((s, i) => (
+                <div key={i} className="swap-item">
+                  <div className="swap-from">{s.from}</div>
+                  <div className="swap-to">→ {s.to}</div>
+                  <div className="swap-why">{s.why}</div>
+                  {s.goalTags && s.goalTags.length > 0 && (
+                    <div className="swap-tags">
+                      {s.goalTags.map((g) => (
+                        <span key={g} className="goal-pill">
+                          {g}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <p className="disclaimer">
-        Recipes are AI-estimated and informational — not medical or dietary advice.
-      </p>
-    </div>
+        <p className="disclaimer">
+          Recipes are informational — not medical or dietary advice.
+        </p>
+
+        <div className="summary-foot">
+          <button type="button" className="btn-ghost" onClick={onRestart}>
+            try another dish
+          </button>
+        </div>
+      </div>
+
+      {superfoodModalOpen && (
+        <SuperfoodModal
+          healthGoals={healthGoals}
+          addedIds={addedSuperfoodIds}
+          onPick={(id) => {
+            onAddSuperfood(id);
+            setSuperfoodModalOpen(false);
+          }}
+          onClose={() => setSuperfoodModalOpen(false)}
+        />
+      )}
+    </main>
   );
 }
 
-function RecipeCard({ kind, recipe }: { kind: "original" | "healthy"; recipe: Recipe }) {
+function OriginalCard({
+  recipe,
+}: {
+  recipe: ConvertResponse["original"];
+}) {
   return (
-    <div className={`recipe-card is-${kind}`}>
-      <p className="recipe-card-label">
-        {kind === "original" ? "original" : "miso healthy version"}
-      </p>
+    <div className="recipe-card is-original">
+      <p className="recipe-card-label">original</p>
       <h2 className="recipe-card-title">{recipe.title}</h2>
+      {recipe.servings != null && (
+        <p className="recipe-card-servings">serves {recipe.servings}</p>
+      )}
       <h4>ingredients</h4>
       <ul>
         {recipe.ingredients.map((ing, i) => (
@@ -598,6 +722,207 @@ function RecipeCard({ kind, recipe }: { kind: "original" | "healthy"; recipe: Re
           <li key={i}>{step.replace(/^\s*\d+[.)]\s*/, "")}</li>
         ))}
       </ol>
+    </div>
+  );
+}
+
+function HealthyCard({ recipe }: { recipe: HealthyRecipe }) {
+  return (
+    <div className="recipe-card is-healthy">
+      <p className="recipe-card-label">miso healthy version</p>
+      <h2 className="recipe-card-title">{recipe.title}</h2>
+      {recipe.servings != null && (
+        <p className="recipe-card-servings">serves {recipe.servings}</p>
+      )}
+      <h4>ingredients</h4>
+      <ul className="ingredient-list">
+        {recipe.ingredients.map((ing, i) => (
+          <IngredientRow key={i} ing={ing} />
+        ))}
+      </ul>
+      <h4>method</h4>
+      <ol>
+        {recipe.method.map((step, i) => (
+          <li key={i}>{step.replace(/^\s*\d+[.)]\s*/, "")}</li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function IngredientRow({ ing }: { ing: IngredientLine }) {
+  const [expanded, setExpanded] = useState(false);
+  const hasSwap = !!(ing.swap?.homemade || ing.swap?.storeBought);
+  return (
+    <li className={`ing-row${ing.superfood ? " is-superfood" : ""}`}>
+      <div className="ing-row-head">
+        <span className="ing-row-text">{ing.text}</span>
+        <div className="ing-row-pills">
+          {ing.superfood && (
+            <span className="ing-pill ing-pill-superfood">superfood</span>
+          )}
+          {ing.goalTags?.map((g) => (
+            <span key={g} className="ing-pill ing-pill-goal">
+              {g}
+            </span>
+          ))}
+          {hasSwap && (
+            <button
+              type="button"
+              className="make-your-miso-btn"
+              onClick={() => setExpanded((e) => !e)}
+              aria-expanded={expanded}
+            >
+              {expanded ? "close" : "make your miso"}
+            </button>
+          )}
+        </div>
+      </div>
+      {expanded && hasSwap && (
+        <div className="swap-options">
+          {ing.swap?.homemade && <SubRecipeBlock sub={ing.swap.homemade} />}
+          {ing.swap?.storeBought && (
+            <div className="store-bought">
+              <div className="store-bought-head">
+                <span className="store-bought-tag">store-bought</span>
+                <span className="store-bought-name">
+                  {ing.swap.storeBought.descriptor}
+                </span>
+              </div>
+              {ing.swap.storeBought.criteria.length > 0 && (
+                <ul className="store-bought-crit">
+                  {ing.swap.storeBought.criteria.map((c, i) => (
+                    <li key={i}>{c}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </li>
+  );
+}
+
+function SubRecipeBlock({ sub }: { sub: SubRecipe }) {
+  return (
+    <div className="sub-recipe">
+      <div className="sub-recipe-head">
+        <span className="sub-recipe-tag">miso homemade</span>
+        <span className="sub-recipe-name">{sub.name}</span>
+      </div>
+      <div className="sub-recipe-body">
+        <h5>ingredients</h5>
+        <ul className="sub-recipe-ings">
+          {sub.ingredients.map((i, idx) => (
+            <li key={idx}>{i}</li>
+          ))}
+        </ul>
+        <h5>method</h5>
+        <ol className="sub-recipe-method">
+          {sub.method.map((step, idx) => (
+            <li key={idx}>{step}</li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────── superfood modal ─────────── */
+
+function SuperfoodModal({
+  healthGoals,
+  addedIds,
+  onPick,
+  onClose,
+}: {
+  healthGoals: HealthGoal[];
+  addedIds: string[];
+  onPick: (id: string) => void;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  const goalSet = new Set(healthGoals);
+  const matched = SUPERFOODS.filter(
+    (s) =>
+      s.goals.some((g) => goalSet.has(g)) && !addedIds.includes(s.id),
+  );
+  const others = SUPERFOODS.filter(
+    (s) =>
+      !s.goals.some((g) => goalSet.has(g)) && !addedIds.includes(s.id),
+  );
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div
+        className="modal-panel"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+      >
+        <div className="modal-head">
+          <h3 className="modal-title">add a superfood</h3>
+          <button
+            type="button"
+            className="modal-close"
+            onClick={onClose}
+            aria-label="close"
+          >
+            ×
+          </button>
+        </div>
+        <p className="modal-sub">
+          Picked for your {healthGoals.length === 1 ? "goal" : "goals"}:{" "}
+          <strong>{healthGoals.join(", ")}</strong>
+        </p>
+        <div className="superfood-grid">
+          {matched.length === 0 ? (
+            <div className="superfood-empty">
+              All set — pick one from below.
+            </div>
+          ) : (
+            matched.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                className="superfood-card"
+                onClick={() => onPick(s.id)}
+              >
+                <div className="superfood-name">{s.name}</div>
+                <div className="superfood-add">{s.addition}</div>
+                <div className="superfood-how">{s.howTo}</div>
+              </button>
+            ))
+          )}
+        </div>
+        {others.length > 0 && (
+          <details className="superfood-more">
+            <summary>also available</summary>
+            <div className="superfood-grid">
+              {others.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  className="superfood-card"
+                  onClick={() => onPick(s.id)}
+                >
+                  <div className="superfood-name">{s.name}</div>
+                  <div className="superfood-add">{s.addition}</div>
+                  <div className="superfood-how">{s.howTo}</div>
+                </button>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
     </div>
   );
 }

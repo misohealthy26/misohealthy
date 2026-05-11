@@ -50,8 +50,10 @@
   --radius-pill: 999px;
 
   --serif: var(--font-fraunces), "Fraunces", Georgia, "Times New Roman", serif;
-  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-          var(--font-inter), "Inter", "Helvetica Neue", system-ui, sans-serif;
+  /* Body sans: Nunito for a rounded, warmer read; falls back to system. */
+  --sans: var(--font-nunito), "Nunito",
+          -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Helvetica Neue", system-ui, sans-serif;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -968,17 +970,14 @@ body::after {
   z-index: 1;
 }
 
-/* ── meet section (below the fold) ───────────── */
+/* ── meet section (three steps; full width since mockup is gone) ─── */
 .meet {
   position: relative;
   z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 96px 32px 120px;
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 80px;
-  align-items: center;
+  padding: 64px 32px 80px;
+  display: block;
 }
 
 .meet-mockup {
@@ -1254,9 +1253,13 @@ body::after {
   font-variation-settings: "SOFT" 100, "opsz" 144;
 }
 .meet-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px;
+  align-items: start;
+}
+@media (max-width: 760px) {
+  .meet-steps { grid-template-columns: 1fr; gap: 24px; }
 }
 .meet-step {
   display: flex;
@@ -1527,3 +1530,456 @@ body::after {
   .step-actions { flex-direction: column-reverse; gap: 8px; width: 100%; }
   .step-actions .btn-primary, .step-actions .btn-ghost { width: 100%; justify-content: center; }
 }
+
+/* ─────────── 2026-05 redesign additions ─────────── */
+
+/* Hero */
+.hero {
+  max-width: 920px;
+  margin: 40px auto 0;
+  padding: 0 24px;
+  text-align: center;
+}
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(40px, 6vw, 64px);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--ink);
+  font-variation-settings: "SOFT" 100, "opsz" 144;
+}
+.hero-title em {
+  color: var(--amber-deep);
+  font-style: italic;
+}
+.hero-sub {
+  max-width: 640px;
+  margin: 18px auto 0;
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  justify-content: center;
+  align-items: center;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-pills li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.hero-pills li::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--amber);
+}
+
+/* Goal-step chip grid */
+.chips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 18px;
+}
+@media (max-width: 600px) {
+  .chips-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Summary controls (vegetarian toggle + superfood add button) */
+.summary-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 8px;
+}
+.toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.toggle-pill:hover { background: var(--amber-soft); }
+.toggle-pill-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  transition: background 0.18s var(--ease);
+}
+.toggle-pill.is-on {
+  background: var(--sage-tint);
+  border-color: var(--sage);
+  color: var(--sage);
+}
+.toggle-pill.is-on .toggle-pill-dot { background: var(--sage); }
+
+.add-superfood-btn {
+  padding: 9px 16px;
+  border: 1px dashed var(--amber);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--amber-deep);
+  cursor: pointer;
+  transition: background 0.18s var(--ease);
+}
+.add-superfood-btn:hover { background: var(--amber-soft); }
+
+/* Summary tags */
+.summary-tag-goal {
+  background: var(--sage-tint);
+  color: var(--sage);
+  border-color: var(--sage);
+}
+
+/* Recipe card servings */
+.recipe-card-servings {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+/* Ingredient list with Make Your Miso */
+.ingredient-list { list-style: none; padding-left: 0; }
+.ing-row {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.ing-row:last-child { border-bottom: none; }
+.ing-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.ing-row-text {
+  flex: 1 1 auto;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink);
+}
+.ing-row-pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.ing-pill {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+}
+.ing-pill-superfood {
+  background: var(--terracotta-tint);
+  color: var(--terracotta);
+}
+.ing-pill-goal {
+  background: var(--sage-tint);
+  color: var(--sage);
+}
+.ing-row.is-superfood .ing-row-text {
+  font-weight: 600;
+}
+.make-your-miso-btn {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid var(--amber);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--amber-deep);
+  cursor: pointer;
+}
+.make-your-miso-btn:hover { background: var(--amber-soft); }
+
+.swap-options {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Sub-recipe (Miso Homemade) */
+.sub-recipe {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.sub-recipe-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.sub-recipe-tag {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--cream);
+}
+.sub-recipe-name {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.sub-recipe-body h5 {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 8px 0 4px;
+}
+.sub-recipe-ings, .sub-recipe-method {
+  padding-left: 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* Store-bought block */
+.store-bought {
+  background: var(--paper);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.store-bought-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.store-bought-tag {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--amber-tint);
+  color: var(--amber-deep);
+}
+.store-bought-name {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.store-bought-crit {
+  list-style: disc;
+  padding-left: 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* Nutrition source caption */
+.nutrition-source {
+  margin-top: 12px;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-mute);
+  text-align: center;
+}
+
+/* Goal pill in swaps */
+.swap-tags { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+.goal-pill {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--sage-tint);
+  color: var(--sage);
+}
+
+/* Summary foot */
+.summary-foot {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Superfood modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 34, 26, 0.55);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(4px);
+}
+.modal-panel {
+  width: min(100%, 640px);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: 24px 24px 28px;
+  border: 1px solid var(--line);
+  box-shadow: var(--glass-shadow);
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.modal-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--ink);
+}
+.modal-close {
+  font-size: 28px;
+  line-height: 1;
+  color: var(--ink-mute);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+.modal-close:hover { color: var(--ink); background: var(--amber-soft); }
+.modal-sub {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin-bottom: 16px;
+}
+.modal-sub strong { color: var(--sage); font-weight: 700; }
+
+.superfood-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+@media (max-width: 540px) {
+  .superfood-grid { grid-template-columns: 1fr; }
+}
+.superfood-card {
+  text-align: left;
+  padding: 14px 14px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-soft);
+  cursor: pointer;
+  transition: background 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.superfood-card:hover { background: var(--amber-soft); border-color: var(--amber); }
+.superfood-name {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.superfood-add {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--amber-deep);
+  margin-bottom: 6px;
+}
+.superfood-how {
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.superfood-empty {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-mute);
+  text-align: center;
+  padding: 16px;
+  grid-column: 1 / -1;
+}
+.superfood-more {
+  margin-top: 18px;
+}
+.superfood-more summary {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+/* Saved-list additions for the new shape */
+.saved-block-servings {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 4px 0 8px;
+}
+.saved-block li.is-superfood { font-weight: 600; }
+.saved-block .ing-pill { margin-left: 6px; vertical-align: middle; }
