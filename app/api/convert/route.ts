@@ -1,8 +1,13 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM_PROMPT } from "@/lib/system-prompt";
+import { consumeRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+// Per-IP cap on LLM calls. Each call costs real money — keep this tight.
+const RATE_LIMIT_MAX = 10;
+const RATE_LIMIT_WINDOW_SECONDS = 60 * 60; // 1 hour
 
 type RequestBody = { dish?: unknown; vegetarian?: unknown };
 
@@ -28,6 +33,36 @@ export async function POST(request: Request) {
     return Response.json(
       { error: "Please enter a dish name (under 200 characters)." },
       { status: 400 },
+    );
+  }
+
+  const ip = getClientIp(request);
+  const limit = await consumeRateLimit(
+    `convert:ip:${ip}`,
+    RATE_LIMIT_MAX,
+    RATE_LIMIT_WINDOW_SECONDS,
+  );
+  if (limit && !limit.allowed) {
+    const retryAfter = Math.max(
+      1,
+      Math.ceil((limit.resetAt.getTime() - Date.now()) / 1000),
+    );
+    return new Response(
+      JSON.stringify({
+        error: "You've hit the hourly limit. Please try again later.",
+      }),
+      {
+        status: 429,
+        headers: {
+          "Content-Type": "application/json",
+          "Retry-After": String(retryAfter),
+          "X-RateLimit-Limit": String(RATE_LIMIT_MAX),
+          "X-RateLimit-Remaining": "0",
+          "X-RateLimit-Reset": String(
+            Math.ceil(limit.resetAt.getTime() / 1000),
+          ),
+        },
+      },
     );
   }
 
