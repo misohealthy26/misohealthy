@@ -1,29 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { PENDING_SAVE_KEY } from "@/lib/pendingSave";
 
 type Props = {
   dish: string;
   vegetarian: boolean;
   payload: unknown;
   signedIn: boolean;
+  autoSaveOnMount?: boolean;
 };
 
-export default function HeartButton({ dish, vegetarian, payload, signedIn }: Props) {
+export default function HeartButton({
+  dish,
+  vegetarian,
+  payload,
+  signedIn,
+  autoSaveOnMount,
+}: Props) {
   const router = useRouter();
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleClick() {
-    if (saved || saving) return;
-
-    if (!signedIn) {
-      router.push(`/login?next=${encodeURIComponent("/")}`);
-      return;
-    }
-
+  const save = useCallback(async () => {
     setSaving(true);
     setError(null);
     try {
@@ -40,7 +41,34 @@ export default function HeartButton({ dish, vegetarian, payload, signedIn }: Pro
     } finally {
       setSaving(false);
     }
+  }, [dish, vegetarian, payload]);
+
+  function handleClick() {
+    if (saved || saving) return;
+
+    if (!signedIn) {
+      try {
+        localStorage.setItem(
+          PENDING_SAVE_KEY,
+          JSON.stringify({ dish, vegetarian, payload, at: Date.now() }),
+        );
+      } catch {
+        // ignore storage failures (private mode, quota) — login still works
+      }
+      router.push(`/login?next=${encodeURIComponent("/")}`);
+      return;
+    }
+
+    void save();
   }
+
+  const autoSaveFired = useRef(false);
+  useEffect(() => {
+    if (!autoSaveOnMount || !signedIn) return;
+    if (autoSaveFired.current) return;
+    autoSaveFired.current = true;
+    void save();
+  }, [autoSaveOnMount, signedIn, save]);
 
   return (
     <button

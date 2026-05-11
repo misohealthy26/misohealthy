@@ -1,8 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import NavAuth from "./NavAuth";
 import HeartButton from "./HeartButton";
+import { clearPendingSave, readPendingSave } from "@/lib/pendingSave";
+
+// useLayoutEffect runs after DOM commit but before browser paint — perfect for
+// reading localStorage and restoring state without a visible flash. Fall back
+// to useEffect on the server to avoid React's SSR warning.
+const useIsoLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 type Recipe = {
   title: string;
@@ -49,6 +56,22 @@ export default function Flow({
 }) {
   const [phase, setPhase] = useState<Phase>({ kind: "step", index: 0 });
   const [data, setData] = useState<FormData>({ dish: "", vegetarian: false });
+  const [autoSavePending, setAutoSavePending] = useState(false);
+
+  useIsoLayoutEffect(() => {
+    const pending = readPendingSave();
+    if (!pending) return;
+    // Restoring from localStorage on mount — happens before paint so no flash.
+    /* eslint-disable react-hooks/set-state-in-effect */
+    setData({ dish: pending.dish, vegetarian: pending.vegetarian });
+    setPhase({ kind: "summary", data: pending.payload as ConvertResponse });
+    if (user) {
+      setAutoSavePending(true);
+      clearPendingSave();
+    }
+    /* eslint-enable react-hooks/set-state-in-effect */
+    // Keep storage if not signed in so the next sign-in still picks it up.
+  }, [user]);
 
   function goNext() {
     if (phase.kind !== "step") return;
@@ -71,6 +94,8 @@ export default function Flow({
   function restart() {
     setData({ dish: "", vegetarian: false });
     setPhase({ kind: "step", index: 0 });
+    setAutoSavePending(false);
+    clearPendingSave();
   }
 
   async function submit(overrideVeg?: boolean) {
@@ -185,6 +210,7 @@ export default function Flow({
           dish={data.dish}
           user={user}
           authEnabled={authEnabled}
+          autoSaveOnMount={autoSavePending}
         />
       )}
     </div>
@@ -477,12 +503,14 @@ function Summary({
   dish,
   user,
   authEnabled,
+  autoSaveOnMount,
 }: {
   result: ConvertResponse;
   vegetarian: boolean;
   dish: string;
   user: FlowUser;
   authEnabled: boolean;
+  autoSaveOnMount?: boolean;
 }) {
   return (
     <div className="summary">
@@ -501,6 +529,7 @@ function Summary({
             vegetarian={vegetarian}
             payload={result}
             signedIn={!!user}
+            autoSaveOnMount={autoSaveOnMount}
           />
         )}
       </div>
