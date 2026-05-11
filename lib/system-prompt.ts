@@ -49,11 +49,11 @@ Return ONLY a single JSON object with this exact shape (no markdown, no commenta
   "original": {
     "title": "string — the common, traditional dish name (e.g. 'Classic Chicken Tikka Masala')",
     "ingredients": ["string", ...],   // 8–14 items, each "qty + ingredient" (e.g. "1 lb chicken thighs")
-    "method": ["string", ...]         // 4–8 numbered steps, each one full sentence
+    "method": ["string", ...]         // 4–8 steps. Do NOT prefix with a step number — the UI numbers them. Each one full sentence.
   },
   "healthy": {
     "title": "string — the miso healthy version (e.g. 'Miso Healthy Chicken Tikka Masala')",
-    "ingredients": ["string", ...],   // same format, with the RFH swaps applied; mark superfood ingredients with ' ✦' suffix
+    "ingredients": ["string", ...],   // same format, with the RFH swaps applied
     "method": ["string", ...]
   },
   "nutrition": [

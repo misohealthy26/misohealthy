@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
+import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
+  axes: ["SOFT", "opsz"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "miso healthy — make any dish miso healthy",
   description:
-    "Enter any craving. We find the most common recipe, transform it into a healthier version, and show you the nutrition side by side — instantly.",
+    "Tell us what you're craving. We turn it into a healthier version of itself, with the nutrition side-by-side.",
   metadataBase: new URL("https://misohealthy.app"),
   openGraph: {
     title: "miso healthy",
@@ -22,13 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css"
-        />
-      </head>
+    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
       <body>{children}</body>
     </html>
   );
