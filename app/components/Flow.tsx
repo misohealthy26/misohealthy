@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import NavAuth from "./NavAuth";
 import HeartButton from "./HeartButton";
+import { SuperfoodsSection } from "./FoodIllustrations";
 import { clearPendingSave, readPendingSave } from "@/lib/pendingSave";
 import {
   HEALTH_GOALS,
@@ -86,7 +87,7 @@ export default function Flow({
     if (phase.index < TOTAL_STEPS - 1) {
       setPhase({ kind: "step", index: (phase.index + 1) as 0 | 1 });
     }
-    // step 1 (health goal) submits on its own via onChoose.
+    // step 1 (dish) submits on its own via onSubmit.
   }
 
   function goBack() {
@@ -133,9 +134,13 @@ export default function Flow({
     }
   }
 
-  function submit(goals: HealthGoal[]) {
+  function chooseGoals(goals: HealthGoal[]) {
     setData((d) => ({ ...d, healthGoals: goals }));
-    void generate(goals, false);
+    goNext();
+  }
+
+  function submit() {
+    void generate(data.healthGoals, false);
   }
 
   function regenerateWithVegetarian(nextVeg: boolean) {
@@ -159,8 +164,8 @@ export default function Flow({
 
   const canAdvance = (() => {
     if (phase.kind !== "step") return false;
-    if (phase.index === 0) return data.dish.trim().length > 0;
-    return false; // step 1 advances itself when user picks a goal
+    if (phase.index === 0) return data.healthGoals.length > 0;
+    return false; // step 1 (dish) submits itself
   })();
 
   return (
@@ -197,20 +202,21 @@ export default function Flow({
         <>
           {phase.index === 0 && <Hero />}
           {phase.index === 0 && <ThreeStepsSection />}
+          {phase.index === 0 && <SuperfoodsSection />}
           <main className="stage">
             {phase.index === 0 && (
-              <DishStep
-                value={data.dish}
-                onChange={(dish) => setData((d) => ({ ...d, dish }))}
-                onSubmit={goNext}
-                canAdvance={canAdvance}
+              <HealthGoalStep
+                value={data.healthGoals}
+                onSubmit={chooseGoals}
               />
             )}
             {phase.index === 1 && (
-              <HealthGoalStep
-                value={data.healthGoals}
+              <DishStep
+                value={data.dish}
+                onChange={(dish) => setData((d) => ({ ...d, dish }))}
                 onSubmit={submit}
                 onBack={goBack}
+                canAdvance={data.dish.trim().length > 0}
               />
             )}
           </main>
@@ -267,72 +273,94 @@ export default function Flow({
 
 /* ─────────── hero / three steps ─────────── */
 
+const TICKER_FOODS = [
+  { label: "beef stroganoff", color: "var(--terracotta)" },
+  { label: "chicken tikka masala", color: "var(--amber)" },
+  { label: "avocado toast", color: "var(--sage)" },
+  { label: "pad thai", color: "var(--terracotta)" },
+  { label: "mac & cheese", color: "var(--amber)" },
+  { label: "nachos", color: "var(--sage)" },
+  { label: "ramen", color: "var(--terracotta)" },
+  { label: "pasta carbonara", color: "var(--amber)" },
+  { label: "fried rice", color: "var(--sage)" },
+  { label: "pizza", color: "var(--terracotta)" },
+  { label: "fish & chips", color: "var(--amber)" },
+  { label: "burritos", color: "var(--sage)" },
+  { label: "butter chicken", color: "var(--terracotta)" },
+  { label: "cheeseburger", color: "var(--amber)" },
+  { label: "bibimbap", color: "var(--sage)" },
+];
+
 function Hero() {
+  const doubled = [...TICKER_FOODS, ...TICKER_FOODS];
   return (
     <section className="hero">
-      <h1 className="hero-title">
-        Make any dish <em>healthier</em>.
+      <h1 className="hero-display">
+        make it
+        <br />
+        <span className="hl-green">miso</span>.
       </h1>
       <p className="hero-sub">
-        Enter a dish you&apos;re craving and miso healthy will generate a
-        science-backed option with side-by-side nutrition. Make custom swaps
-        and superfood upgrades.
+        Eating the right foods can prevent, manage, and even reverse disease —
+        and the science backs it up. Miso has been a healing superfood for
+        thousands of years — proof that food is medicine. misohealthy is here
+        to help you <strong>make it miso</strong>: find simple swaps that keep
+        the flavors you love while making every meal work for your body.
       </p>
-      <ul className="hero-pills">
-        <li>Science-backed recipes</li>
-        <li>Make your own swaps</li>
-        <li>Superfood add-ons</li>
-        <li>Side-by-side nutrition</li>
-      </ul>
+      <div className="ticker-wrap">
+        <div className="ticker-track">
+          {doubled.map((food, i) => (
+            <span key={i} className="ticker-item">
+              <span
+                className="ticker-dot"
+                style={{ background: food.color }}
+              />
+              {food.label}
+            </span>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
 
 function ThreeStepsSection() {
   return (
-    <section className="meet">
-      <div className="meet-content">
-        <h2 className="meet-title">
-          three steps to a <em>healthier</em> dish.
-        </h2>
-        <div className="meet-steps">
-          <div className="meet-step">
-            <div className="meet-step-num">01</div>
-            <div className="meet-step-body">
-              <h3 className="meet-step-title">
-                Tell us what you&apos;re craving
-              </h3>
-              <p className="meet-step-desc">
-                Type any dish — beef stroganoff, matzo ball soup, hamburger.
-              </p>
-            </div>
-          </div>
-          <div className="meet-step">
-            <div className="meet-step-num">02</div>
-            <div className="meet-step-body">
-              <h3 className="meet-step-title">What are your health goals?</h3>
-              <p className="meet-step-desc">
-                Pick from weight, heart health, blood sugar, energy, gut
-                health, immunity, bone &amp; muscle, cognitive, or
-                inflammation. We&apos;ll lean into swaps that fit and tag them
-                on the recipe.
-              </p>
-            </div>
-          </div>
-          <div className="meet-step">
-            <div className="meet-step-num">03</div>
-            <div className="meet-step-body">
-              <h3 className="meet-step-title">We make it healthier</h3>
-              <p className="meet-step-desc">
-                Smart, science-backed recipes from medical experts,
-                nutritionists, and food industry pros — drawing from cuisines
-                around the world.
-              </p>
-            </div>
-          </div>
-        </div>
+    <div className="step-cards">
+      <div className="step-card c-teal">
+        <div className="step-card-num">01</div>
+        <h3 className="step-card-title">Set your health goals</h3>
+        <p className="step-card-desc">
+          Heart health, brain health, cancer prevention, pre-diabetes — pick
+          what matters to you.
+        </p>
       </div>
-    </section>
+      <div className="step-card c-green">
+        <div className="step-card-num">02</div>
+        <h3 className="step-card-title">Tell us what you&apos;re craving</h3>
+        <p className="step-card-desc">
+          Type any dish — beef stroganoff, ramen, pasta carbonara. We know them
+          all.
+        </p>
+      </div>
+      <div className="step-card c-red">
+        <div className="step-card-num">03</div>
+        <h3 className="step-card-title">Get your healthier recipe</h3>
+        <p className="step-card-desc">
+          Healthier swaps tailored to your goals. Make it vegetarian, add a
+          superfood, or tap &ldquo;make it miso&rdquo; to get a homemade
+          recipe for any specialty ingredient.
+        </p>
+      </div>
+      <div className="step-card c-violet">
+        <div className="step-card-num">04</div>
+        <h3 className="step-card-title">See how food makes a difference</h3>
+        <p className="step-card-desc">
+          Side-by-side nutrition, % of daily values met, and exactly how each
+          swap targets your health goals.
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -342,16 +370,18 @@ function DishStep({
   value,
   onChange,
   onSubmit,
+  onBack,
   canAdvance,
 }: {
   value: string;
   onChange: (v: string) => void;
   onSubmit: () => void;
+  onBack: () => void;
   canAdvance: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
   }, []);
 
   return (
@@ -373,12 +403,15 @@ function DishStep({
         autoComplete="off"
       />
       <div className="step-actions">
+        <button type="button" className="btn-ghost" onClick={onBack}>
+          back
+        </button>
         <button type="submit" className="btn-primary" disabled={!canAdvance}>
-          continue <Arrow />
+          cook it <Arrow />
         </button>
       </div>
       <div className="hint">
-        press <kbd>enter</kbd> to continue
+        press <kbd>enter</kbd> to cook it
       </div>
     </form>
   );
@@ -387,11 +420,9 @@ function DishStep({
 function HealthGoalStep({
   value,
   onSubmit,
-  onBack,
 }: {
   value: HealthGoal[];
   onSubmit: (g: HealthGoal[]) => void;
-  onBack: () => void;
 }) {
   const [selected, setSelected] = useState<HealthGoal[]>(value);
 
@@ -405,8 +436,7 @@ function HealthGoalStep({
     <div className="step">
       <h2 className="step-title">what are your health goals?</h2>
       <p className="step-sub">
-        Pick one or more. We&apos;ll lean into swaps that fit and tag them on
-        the recipe.
+        Pick one or more. We&apos;ll tailor every swap to what matters to you.
       </p>
       <div className="chips chips-grid">
         {HEALTH_GOALS.map((g) => (
@@ -422,22 +452,19 @@ function HealthGoalStep({
         ))}
       </div>
       <div className="step-actions">
-        <button className="btn-ghost" onClick={onBack}>
-          back
-        </button>
         <button
           type="button"
           className="btn-primary"
           disabled={selected.length === 0}
           onClick={() => onSubmit(selected)}
         >
-          cook it <Arrow />
+          continue <Arrow />
         </button>
       </div>
       <div className="hint">
         {selected.length === 0
           ? "pick one or more"
-          : `${selected.length} selected — tap "cook it" when ready`}
+          : `${selected.length} selected — tap "continue" when ready`}
       </div>
     </div>
   );
@@ -625,32 +652,9 @@ function Summary({
           <HealthyCard recipe={result.healthy} />
         </div>
 
-        {result.nutrition?.length > 0 && (
-          <div className="nutrition-card">
-            <h4>nutrition per serving</h4>
-            <div className="nutrition-grid">
-              {result.nutrition.map((row) => (
-                <div key={row.label} className="nutrition-cell">
-                  <div className="nutrition-cell-label">{row.label}</div>
-                  <div className="nutrition-cell-values">
-                    <span className="v is-original">{row.original}</span>
-                    <span className="nutrition-arrow">→</span>
-                    <span className="v">{row.healthy}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="nutrition-source">
-              {result.nutritionMeta?.source === "usda"
-                ? "Powered by USDA FoodData Central — per-serving estimates."
-                : "Estimated from a nutrition reference — values are approximate."}
-            </p>
-          </div>
-        )}
-
         {result.swaps?.length > 0 && (
           <div className="swaps-card">
-            <h4>smart swaps applied</h4>
+            <h4>Make it Miso</h4>
             <div className="swap-list">
               {result.swaps.map((s, i) => (
                 <div key={i} className="swap-item">
@@ -669,6 +673,47 @@ function Summary({
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {result.nutrition?.length > 0 && (
+          <div className="nutrition-card">
+            <div className="nutrition-heading">
+              <h4>nutrition per serving</h4>
+              <span className="usda-badge">
+                {result.nutritionMeta?.source === "usda" || result.nutritionMeta?.source === "usda-partial"
+                  ? "Powered by USDA"
+                  : "USDA values used where possible"}
+              </span>
+            </div>
+            <div className="nutrition-grid">
+              {result.nutrition.map((row) => (
+                <div key={row.label} className="nutrition-cell">
+                  <div className="nutrition-cell-label">{row.label}</div>
+                  <div className="nutrition-cell-values">
+                    <span className="v is-original">{row.original}</span>
+                    <span className="nutrition-arrow">→</span>
+                    <span className="v">{row.healthy}</span>
+                  </div>
+                  {row.healthyDV && (
+                    <div className="nutrition-dv-wrap">
+                      <div className="nutrition-dv-bar">
+                        <div
+                          className="nutrition-dv-fill"
+                          style={{ width: `${Math.min(parseFloat(row.healthyDV) || 0, 100)}%` }}
+                        />
+                      </div>
+                      <div className="nutrition-dv">{row.healthyDV} DV</div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <p className="nutrition-source">
+              {result.nutritionMeta?.source === "usda-partial"
+                ? "Original recipe values: USDA FoodData Central · Healthy version: estimated based on ingredients · % daily values per FDA guidelines"
+                : "Values estimated based on ingredients · % daily values per FDA / USDA guidelines"}
+            </p>
           </div>
         )}
 
@@ -773,11 +818,24 @@ function IngredientRow({ ing }: { ing: IngredientLine }) {
               onClick={() => setExpanded((e) => !e)}
               aria-expanded={expanded}
             >
-              {expanded ? "close" : "make your miso"}
+              {expanded ? "close" : "make it miso"}
             </button>
           )}
         </div>
       </div>
+      {ing.nutrients && ing.nutrients.length > 0 && (
+        <div className="ing-nutrients">
+          {ing.nutrients.map((n) => (
+            <span key={n.label} className="ing-nutrient">
+              <span className="ing-nutrient-label">{n.label}</span>
+              <span className="ing-nutrient-bar">
+                <span className="ing-nutrient-fill" style={{ width: n.pct }} />
+              </span>
+              <span className="ing-nutrient-pct">{n.pct} DV</span>
+            </span>
+          ))}
+        </div>
+      )}
       {expanded && hasSwap && (
         <div className="swap-options">
           {ing.swap?.homemade && <SubRecipeBlock sub={ing.swap.homemade} />}

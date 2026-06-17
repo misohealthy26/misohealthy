@@ -3,15 +3,13 @@
 // and store-bought (descriptor, no brand) swap options; LLM-emitted goal tags.
 
 export const HEALTH_GOALS = [
-  "weight",
+  "weight loss",
   "heart health",
-  "blood sugar",
-  "energy",
+  "pre-diabetes",
   "gut health",
-  "immunity",
-  "bone and muscle",
-  "cognitive",
-  "inflammation",
+  "brain health",
+  "cancer prevention",
+  "menopause / perimenopause",
 ] as const;
 
 export type HealthGoal = (typeof HEALTH_GOALS)[number];
@@ -34,10 +32,16 @@ export type StoreBoughtSwap = {
   criteria: string[];
 };
 
+export type NutrientContribution = {
+  label: string;
+  pct: string;
+};
+
 export type IngredientLine = {
   text: string;
   superfood?: boolean;
   goalTags?: HealthGoal[];
+  nutrients?: NutrientContribution[];
   swap?: {
     homemade?: SubRecipe;
     storeBought?: StoreBoughtSwap;
@@ -62,6 +66,7 @@ export type NutritionRow = {
   label: string;
   original: string;
   healthy: string;
+  healthyDV?: string; // e.g. "24%" — % of FDA daily value for healthy version
 };
 
 export type SwapNote = {
@@ -72,7 +77,7 @@ export type SwapNote = {
 };
 
 export type NutritionMeta = {
-  source: "estimate" | "usda";
+  source: "estimate" | "usda" | "usda-partial";
 };
 
 export type ConvertResponse = {

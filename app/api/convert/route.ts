@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM_PROMPT } from "@/lib/system-prompt";
 import { consumeRateLimit, getClientIp } from "@/lib/rate-limit";
 import { isHealthGoal } from "@/lib/types";
+import { lookupOriginalNutrition, mergeUsdaOriginal } from "@/lib/usda";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -92,9 +93,15 @@ export async function POST(request: Request) {
 
   try {
     const completion = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 8000,
-      system: SYSTEM_PROMPT,
+      model: "claude-haiku-4-5",
+      max_tokens: 4000,
+      system: [
+        {
+          type: "text",
+          text: SYSTEM_PROMPT,
+          cache_control: { type: "ephemeral" },
+        },
+      ],
       messages: [{ role: "user", content: userMessage }],
     });
 
@@ -117,6 +124,32 @@ export async function POST(request: Request) {
         { error: "Could not parse the recipe. Please try again." },
         { status: 502 },
       );
+    }
+
+    // Attempt to replace Claude's estimated nutrition with real USDA values.
+    // If the lookup fails or finds no match, we keep Claude's estimates.
+    const usdaKey = process.env.USDA_API_KEY;
+    if (usdaKey && parsed && typeof parsed === "object") {
+      try {
+        const p = parsed as Record<string, unknown>;
+        const origTitle =
+          typeof (p.original as Record<string, unknown>)?.title === "string"
+            ? ((p.original as Record<string, unknown>).title as string)
+            : "";
+        if (origTitle && Array.isArray(p.nutrition)) {
+          const usdaResult = await lookupOriginalNutrition(origTitle, usdaKey);
+          if (usdaResult) {
+            p.nutrition = mergeUsdaOriginal(
+              p.nutrition as Array<{ label: string; original: string; healthy: string; healthyDV?: string }>,
+              usdaResult.data,
+            );
+            p.nutritionMeta = { source: "usda-partial" };
+            parsed = p;
+          }
+        }
+      } catch {
+        // USDA lookup failed — keep Claude's estimate, no crash
+      }
     }
 
     return Response.json(parsed);
