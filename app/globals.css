@@ -2273,6 +2273,170 @@ body::after {
   margin-bottom: 8px;
 }
 
+/* ── section tabs (Make it Miso / Bake it Miso) ── */
+.section-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 24px 12px;
+  position: relative;
+  z-index: 1;
+}
+.section-tab {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  padding: 8px 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-mute);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.section-tab:hover {
+  background: var(--amber-soft);
+  color: var(--ink);
+  border-color: rgba(13, 148, 136, 0.3);
+}
+.section-tab.is-active {
+  background: rgba(13, 148, 136, 0.88);
+  color: white;
+  border-color: var(--amber);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 6px 18px -6px rgba(13, 148, 136, 0.5);
+}
+
+/* bake tab — light brown when inactive */
+.section-tab--bake {
+  color: #8b6035;
+  border-color: rgba(155, 110, 50, 0.35);
+  background: rgba(185, 145, 90, 0.10);
+}
+.section-tab--bake:hover {
+  background: rgba(185, 145, 90, 0.20);
+  border-color: rgba(155, 110, 50, 0.55);
+  color: #6b4520;
+}
+.section-tab--bake.is-active {
+  background: rgba(120, 82, 38, 0.90);
+  color: white;
+  border-color: #8b6035;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 6px 18px -6px rgba(120, 82, 38, 0.55);
+}
+
+/* ── bake page — warm neutral background overlay ── */
+.scene--bake::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: 0;
+  background-color: #fdf8f0;
+  background-image:
+    radial-gradient(ellipse 70% 55% at 30% 20%, rgba(210, 178, 130, 0.78) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 50% at 80% 25%, rgba(242, 228, 198, 0.72) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 45% at 68% 62%, rgba(196, 168, 128, 0.65) 0%, transparent 65%);
+  filter: blur(70px);
+  pointer-events: none;
+  will-change: opacity;
+}
+.scene--bake::after {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: 0;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 18% 80%, rgba(248, 235, 210, 0.70) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 62% 94%, rgba(218, 188, 148, 0.62) 0%, transparent 65%),
+    radial-gradient(ellipse 46% 36% at 88% 70%, rgba(95, 158, 100, 0.38) 0%, transparent 65%);
+  filter: blur(70px);
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* ── coming soon page ── */
+.coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 560px;
+  animation: stepIn 0.55s var(--ease);
+  position: relative;
+  z-index: 1;
+}
+.coming-soon-eyebrow {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 16px;
+}
+.coming-soon-title {
+  font-family: var(--serif);
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: #3d2a14;
+  margin-bottom: 28px;
+}
+.coming-soon-miso {
+  color: white;
+  font-style: italic;
+}
+.coming-soon-sub {
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  color: #5c4025;
+  max-width: 460px;
+}
+
+/* ── bake it miso recipe page ── */
+.bake-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto 48px;
+  animation: stepIn 0.55s var(--ease);
+  position: relative;
+  z-index: 1;
+}
+.bake-recipe-intro {
+  text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+.bake-recipe-intro-text {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-style: italic;
+  color: #5c4025;
+  letter-spacing: -0.01em;
+}
+.bake-recipe-illo {
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+}
+.bake-more-note {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  color: #8b6035;
+  letter-spacing: -0.01em;
+}
+
 /* Saved-list additions for the new shape */
 .saved-block-servings {
   font-family: var(--sans);

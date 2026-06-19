@@ -25,6 +25,8 @@ import {
 const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+type Section = "make" | "bake";
+
 type FormData = {
   dish: string;
   healthGoals: HealthGoal[];
@@ -59,6 +61,7 @@ export default function Flow({
   user: FlowUser;
   authEnabled: boolean;
 }) {
+  const [section, setSection] = useState<Section>("make");
   const [phase, setPhase] = useState<Phase>({ kind: "step", index: 0 });
   const [data, setData] = useState<FormData>({ dish: "", healthGoals: [] });
   const [autoSavePending, setAutoSavePending] = useState(false);
@@ -169,7 +172,7 @@ export default function Flow({
   })();
 
   return (
-    <div className="scene">
+    <div className={`scene${section === "bake" ? " scene--bake" : ""}`}>
       <nav className="nav">
         <button
           type="button"
@@ -197,6 +200,13 @@ export default function Flow({
         </button>
         {authEnabled && <NavAuth user={user} />}
       </nav>
+
+      <SectionTabs active={section} onChange={setSection} />
+
+      {section === "bake" ? (
+        <BakeItMiso />
+      ) : (
+      <>
 
       {phase.kind === "step" && (
         <>
@@ -267,7 +277,380 @@ export default function Flow({
           onRestart={restart}
         />
       )}
+
+      </>
+      )}
     </div>
+  );
+}
+
+/* ─────────── section tabs ─────────── */
+
+function SectionTabs({
+  active,
+  onChange,
+}: {
+  active: Section;
+  onChange: (s: Section) => void;
+}) {
+  return (
+    <div className="section-tabs">
+      <button
+        type="button"
+        className={`section-tab${active === "make" ? " is-active" : ""}`}
+        onClick={() => onChange("make")}
+      >
+        make it miso
+      </button>
+      <button
+        type="button"
+        className={`section-tab section-tab--bake${active === "bake" ? " is-active" : ""}`}
+        onClick={() => onChange("bake")}
+      >
+        bake it miso
+      </button>
+    </div>
+  );
+}
+
+function BakeItMiso() {
+  const healthyIngredients: IngredientLine[] = [
+    {
+      text: "1 large very ripe banana, ~150g peeled — cooked down to 85g concentrate",
+      superfood: true,
+      goalTags: ["brain health"],
+    },
+    { text: "115g butter, browned" },
+    {
+      text: "32g white miso",
+      superfood: true,
+      goalTags: ["gut health"],
+      swap: {
+        storeBought: {
+          descriptor: "White or yellow miso paste",
+          criteria: [
+            "refrigerated — unpasteurized where possible",
+            "no added sugar, MSG, or preservatives",
+            "white (shiro) miso for mildest flavor in baking",
+          ],
+        },
+      },
+    },
+    {
+      text: "100g coconut sugar",
+      goalTags: ["gut health"],
+    },
+    {
+      text: "60g maple sugar",
+      swap: {
+        storeBought: {
+          descriptor: "Granulated maple sugar",
+          criteria: [
+            "100% pure maple sugar — no fillers or anti-caking agents",
+            "granulated (not syrup) so it behaves like white sugar in dough",
+          ],
+        },
+      },
+    },
+    { text: "1 large egg yolk", goalTags: ["brain health"] },
+    { text: "½ tsp vanilla extract" },
+    { text: "85g cooked banana concentrate, cooled" },
+    { text: "135g all-purpose flour" },
+    {
+      text: "45g oat flour",
+      superfood: true,
+      goalTags: ["heart health", "gut health"],
+      swap: {
+        storeBought: {
+          descriptor: "Whole grain oat flour",
+          criteria: [
+            "100% whole grain rolled oats ground to flour",
+            "no added starch, fillers, or bleaching agents",
+            "certified gluten-free if needed",
+          ],
+        },
+      },
+    },
+    { text: "½ tsp baking soda" },
+    { text: "4 tbsp turbinado sugar, for rolling — all turbinado, no granulated" },
+  ];
+
+  const healthyMethod = [
+    "Mash banana in a small pan. Skip the optional sugar — a very ripe banana caramelizes on its own. Cook over medium heat, stirring often, until thick and jammy, about 85g. Cool completely.",
+    "Brown the butter until it foams, smells nutty, and milk solids turn golden. Scrape into a bowl with the browned bits. Cool 10 minutes.",
+    "Whisk miso into warm butter until smooth. Add coconut sugar, maple sugar, and 1 tsp water. Whisk 30–60 seconds. Add egg yolk, vanilla, and banana concentrate. Whisk until smooth and glossy.",
+    "Add the AP flour, oat flour, and baking soda. Fold gently until no dry flour remains. The oat flour makes the dough slightly denser — this is normal. Do not overmix.",
+    "Cover and chill at least 1 hour. For best flavor and texture, chill 4–24 hours. If overnight, rest at room temperature 10–15 min before scooping.",
+    "Heat oven to 350°F / 175°C. Scoop into 40–45g balls. Roll generously in turbinado sugar. Place a few inches apart on a parchment-lined metal baking sheet.",
+    "Bake 7–8 min until puffed and edges begin to set. Remove and give the pan one firm slam on the counter to collapse the centers. Return 2–4 min until edges are golden and centers still look slightly soft. One more gentle tap if domed. Cool on pan 10 minutes.",
+  ];
+
+  const bakeSwaps = [
+    {
+      from: "60g granulated sugar (in dough)",
+      to: "60g maple sugar",
+      why: "Same granular texture, dissolves identically in dough — virtually no texture change. Slightly lower glycemic index, trace minerals. The swap that costs nothing.",
+    },
+    {
+      from: "45g all-purpose flour",
+      to: "45g oat flour (keep 135g AP flour)",
+      why: "Beta-glucan in oat flour holds moisture during baking, enhancing the chewy center while edges still crisp from butter and sugar. Adds soluble fiber without changing flavor.",
+    },
+    {
+      from: "2 tbsp granulated sugar (rolling)",
+      to: "all turbinado for rolling (4 tbsp total)",
+      why: "Coarser turbinado crystals create a crunchier, more pronounced outer crust. This swap actually improves the crispy edge — it's an upgrade.",
+    },
+    {
+      from: "1 tsp granulated sugar in banana concentrate (optional)",
+      to: "skip it",
+      why: "A very ripe banana has enough natural sugars to caramelize in the pan. The teaspoon doesn't earn its place.",
+    },
+  ];
+
+  const bakeNutrition = [
+    { label: "Calories", original: "~180 kcal", healthy: "~102 kcal" },
+    { label: "Protein", original: "~2g", healthy: "~1g" },
+    { label: "Fiber", original: "~0.5g", healthy: "~0.5g" },
+    { label: "Saturated fat", original: "~6g", healthy: "~2.5g" },
+    { label: "Added sugar", original: "~14g", healthy: "~8g" },
+    { label: "Sodium", original: "~85mg", healthy: "~8mg" },
+  ];
+
+  return (
+    <main className="stage stage-summary">
+      <div className="summary">
+        {/* coming soon header */}
+        <div className="bake-hero">
+          <p className="coming-soon-eyebrow">coming soon</p>
+          <h1 className="coming-soon-title">
+            bake it
+            <br />
+            <span className="coming-soon-miso">miso.</span>
+          </h1>
+          <p className="coming-soon-sub">
+            Healthy baking is on its way. Real flour swaps, smarter sweeteners,
+            and techniques that make your baked goods and desserts tasting
+            delicious and working a little better for you.
+          </p>
+        </div>
+
+        {/* recipe preview */}
+        <div className="bake-recipe-intro">
+          <p className="bake-recipe-intro-text">
+            Thank you for waiting. Here&rsquo;s a recipe for my Banana Miso Cookies.
+          </p>
+        </div>
+
+        <div className="summary-head">
+          <div>
+            <h1 className="summary-title">banana miso cookies</h1>
+            <div className="summary-tags">
+              <span className="summary-tag summary-tag-goal">gut health</span>
+              <span className="summary-tag summary-tag-goal">brain health</span>
+              <span className="summary-tag summary-tag-goal">heart health</span>
+              <span className="summary-tag">makes ~24 cookies</span>
+              <span className="summary-tag">crispy edges · chewy middle</span>
+            </div>
+          </div>
+          <div className="bake-recipe-illo">
+            <BananaMisoCookieSvg />
+          </div>
+        </div>
+
+        <div className="summary-grid">
+          <BakeOriginalCard />
+          <div className="recipe-card is-healthy">
+            <p className="recipe-card-label">bake it miso</p>
+            <h2 className="recipe-card-title">Banana Miso Cookies</h2>
+            <p className="recipe-card-servings">makes ~24 cookies</p>
+
+            <h4>banana concentrate</h4>
+            <ul className="ingredient-list">
+              <IngredientRow ing={healthyIngredients[0]} />
+            </ul>
+
+            <h4>cookie dough</h4>
+            <ul className="ingredient-list">
+              {healthyIngredients.slice(1, 11).map((ing, i) => (
+                <IngredientRow key={i} ing={ing} />
+              ))}
+            </ul>
+
+            <h4>for rolling</h4>
+            <ul className="ingredient-list">
+              <IngredientRow ing={healthyIngredients[11]} />
+            </ul>
+
+            <h4>method</h4>
+            <ol>
+              {healthyMethod.map((step, i) => (
+                <li key={i}>{step}</li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <div className="swaps-card">
+          <h4>Make it Miso</h4>
+          <div className="swap-list">
+            {bakeSwaps.map((s, i) => (
+              <div key={i} className="swap-item">
+                <div className="swap-from">{s.from}</div>
+                <div className="swap-to">→ {s.to}</div>
+                <div className="swap-why">{s.why}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="nutrition-card">
+          <div className="nutrition-heading">
+            <h4>nutrition per cookie (1 of 24) · classic snickerdoodle vs. bake it miso</h4>
+            <span className="usda-badge">Powered by USDA</span>
+          </div>
+          <div className="nutrition-grid">
+            {bakeNutrition.map((row) => (
+              <div key={row.label} className="nutrition-cell">
+                <div className="nutrition-cell-label">{row.label}</div>
+                <div className="nutrition-cell-values">
+                  <span className="v is-original">{row.original}</span>
+                  <span className="nutrition-arrow">→</span>
+                  <span className="v">{row.healthy}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="nutrition-source">
+            Classic snickerdoodle values: USDA FoodData Central · Bake it Miso values: estimated based on ingredients · per 40g cookie, 24 per batch
+          </p>
+        </div>
+
+        <p className="disclaimer">
+          Recipes are informational — not medical or dietary advice.
+        </p>
+        <div className="summary-foot">
+          <span className="bake-more-note">more bake it miso recipes coming soon.</span>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function BakeOriginalCard() {
+  return (
+    <div className="recipe-card is-original">
+      <p className="recipe-card-label">classic snickerdoodle</p>
+      <h2 className="recipe-card-title">Classic Snickerdoodle Cookies</h2>
+      <p className="recipe-card-servings">makes ~24 cookies</p>
+
+      <h4>cookie dough</h4>
+      <ul>
+        <li>2¾ cups (345g) all-purpose flour</li>
+        <li>2 tsp cream of tartar</li>
+        <li>1 tsp baking soda</li>
+        <li>¼ tsp salt</li>
+        <li>1 cup (225g) unsalted butter, softened</li>
+        <li>1½ cups (300g) white granulated sugar</li>
+        <li>2 large eggs</li>
+        <li>1 tsp vanilla extract</li>
+      </ul>
+
+      <h4>for rolling</h4>
+      <ul>
+        <li>3 tbsp white granulated sugar</li>
+        <li>1½ tsp ground cinnamon</li>
+      </ul>
+
+      <h4>method</h4>
+      <ol>
+        <li>Preheat oven to 375°F. Whisk together flour, cream of tartar, baking soda, and salt.</li>
+        <li>Beat butter and sugar with a mixer until very light and fluffy, 3–4 minutes.</li>
+        <li>Beat in eggs one at a time, then vanilla, until smooth and combined.</li>
+        <li>Add flour mixture and mix on low until just combined. Do not overmix.</li>
+        <li>Stir together rolling sugar and cinnamon in a small bowl.</li>
+        <li>Roll dough into balls (~40g each), coat generously in cinnamon-sugar. Place 2 inches apart on an ungreased baking sheet.</li>
+        <li>Bake 10–12 minutes until edges are just set and centers look barely done. Cool on pan 5 minutes.</li>
+      </ol>
+    </div>
+  );
+}
+
+function BananaMisoCookieSvg() {
+  return (
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      {/* warm cream disc background */}
+      <circle cx="50" cy="50" r="46" fill="#fdf0d0" />
+
+      {/* ── cake stand base ── */}
+      <ellipse cx="50" cy="92" rx="20" ry="4" fill="#d4b060" opacity="0.30" />
+      <ellipse cx="50" cy="90" rx="18" ry="4" fill="#f2e4c0" stroke="#c09050" strokeWidth="1" />
+      <ellipse cx="47" cy="89" rx="9" ry="1.8" fill="white" opacity="0.45" />
+
+      {/* stem */}
+      <path d="M 47 79 L 46 90 L 54 90 L 53 79 Z" fill="#eedad8" stroke="#c09050" strokeWidth="0.8" />
+      <path d="M 48.5 80 L 48 89" stroke="white" strokeWidth="1.1" opacity="0.45" strokeLinecap="round" />
+
+      {/* plate underside */}
+      <ellipse cx="50" cy="80" rx="30" ry="7" fill="#c09050" opacity="0.40" />
+      {/* plate top */}
+      <ellipse cx="50" cy="79" rx="30" ry="7" fill="#f2e4c0" stroke="#c09050" strokeWidth="1" />
+      <ellipse cx="47" cy="77.5" rx="17" ry="3.2" fill="white" opacity="0.38" />
+
+      {/* ── cookie 1 — bottom of pile ── */}
+      <ellipse cx="51" cy="77" rx="20" ry="6" fill="#8b4e10" opacity="0.65" />
+      <ellipse cx="51" cy="74" rx="20" ry="6" fill="#c57828" stroke="#7a3e08" strokeWidth="1" />
+      <ellipse cx="51" cy="74" rx="13" ry="4" fill="#d88c38" />
+      <ellipse cx="51" cy="74" rx="7.5" ry="2.5" fill="#e8a84c" opacity="0.82" />
+      <circle cx="46" cy="73" r="1.4" fill="#7a3a08" opacity="0.48" />
+      <circle cx="56" cy="75" r="1.1" fill="#7a3a08" opacity="0.42" />
+
+      {/* ── cookie 2 — middle ── */}
+      <ellipse cx="49" cy="69" rx="21" ry="6.5" fill="#8b4e10" opacity="0.65" />
+      <ellipse cx="49" cy="66" rx="21" ry="6.5" fill="#c87828" stroke="#7a3e08" strokeWidth="1" />
+      <ellipse cx="49" cy="66" rx="14" ry="4.5" fill="#da8e3c" />
+      <ellipse cx="49" cy="66" rx="8" ry="2.8" fill="#eba84c" opacity="0.82" />
+      <circle cx="54" cy="65" r="1.3" fill="#7a3a08" opacity="0.48" />
+      <circle cx="44" cy="67" r="1.0" fill="#7a3a08" opacity="0.42" />
+      {/* sparkle on rim */}
+      <circle cx="34" cy="66" r="1.1" fill="#f8d880" opacity="0.78" />
+      <circle cx="65" cy="64" r="1.0" fill="#f8d880" opacity="0.72" />
+
+      {/* ── cookie 3 — top of pile, most detail ── */}
+      <ellipse cx="51" cy="61" rx="22" ry="7" fill="#8b4e10" opacity="0.65" />
+      <ellipse cx="51" cy="58" rx="22" ry="7" fill="#c87828" stroke="#7a3e08" strokeWidth="1.2" />
+      <ellipse cx="51" cy="58" rx="15" ry="5" fill="#d98b38" />
+      <ellipse cx="51" cy="58" rx="9" ry="3.2" fill="#eba84c" opacity="0.85" />
+      <ellipse cx="49.5" cy="57.5" rx="5" ry="1.8" fill="#f2b85a" opacity="0.65" />
+      {/* turbinado sparkle on top cookie rim */}
+      <circle cx="34" cy="57" r="1.2" fill="#f8d880" opacity="0.85" />
+      <circle cx="39" cy="52" r="1.0" fill="#f8d880" opacity="0.78" />
+      <circle cx="51" cy="51" r="1.1" fill="#f8d880" opacity="0.80" />
+      <circle cx="62" cy="53" r="1.0" fill="#f8d880" opacity="0.75" />
+      <circle cx="67" cy="58" r="1.2" fill="#f8d880" opacity="0.85" />
+      {/* miso + banana flecks */}
+      <circle cx="46" cy="56" r="1.7" fill="#7a3a08" opacity="0.52" />
+      <circle cx="55" cy="59" r="1.3" fill="#8b4a10" opacity="0.46" />
+      <circle cx="50" cy="61" r="1.4" fill="#7a3a08" opacity="0.44" />
+      {/* crackle lines */}
+      <path d="M 51 58 Q 54 54 56 50" stroke="#7a4010" strokeWidth="0.8" opacity="0.28" fill="none" strokeLinecap="round" />
+      <path d="M 51 58 Q 57 59 63 61" stroke="#7a4010" strokeWidth="0.8" opacity="0.28" fill="none" strokeLinecap="round" />
+      <path d="M 51 58 Q 45 60 40 63" stroke="#7a4010" strokeWidth="0.8" opacity="0.28" fill="none" strokeLinecap="round" />
+      {/* gloss shine */}
+      <path d="M 36 56 Q 34 59 35 63" stroke="#f5c060" strokeWidth="1.4" fill="none" strokeLinecap="round" opacity="0.32" />
+
+      {/* ── small cookies leaning against the pile ── */}
+      {/* leaning cookie left */}
+      <ellipse cx="28" cy="72" rx="10" ry="3.5" fill="#8b4e10" opacity="0.55" transform="rotate(-30 28 72)" />
+      <ellipse cx="28" cy="70" rx="10" ry="3.5" fill="#c87828" stroke="#7a3e08" strokeWidth="0.9" transform="rotate(-30 28 70)" />
+      <ellipse cx="28" cy="70" rx="6.5" ry="2.3" fill="#da8e3c" transform="rotate(-30 28 70)" />
+      <ellipse cx="28" cy="70" rx="3.5" ry="1.4" fill="#eba84c" opacity="0.78" transform="rotate(-30 28 70)" />
+      {/* leaning cookie right */}
+      <ellipse cx="73" cy="73" rx="10" ry="3.5" fill="#8b4e10" opacity="0.55" transform="rotate(28 73 73)" />
+      <ellipse cx="73" cy="71" rx="10" ry="3.5" fill="#c87828" stroke="#7a3e08" strokeWidth="0.9" transform="rotate(28 73 71)" />
+      <ellipse cx="73" cy="71" rx="6.5" ry="2.3" fill="#da8e3c" transform="rotate(28 73 71)" />
+      <ellipse cx="73" cy="71" rx="3.5" ry="1.4" fill="#eba84c" opacity="0.78" transform="rotate(28 73 71)" />
+    </svg>
   );
 }
 
