@@ -1586,6 +1586,32 @@ body::after {
   color: var(--ink-soft);
 }
 
+/* Intro block — above section tabs */
+.intro-block {
+  max-width: 640px;
+  margin: 16px auto 20px;
+  padding: 0 24px;
+  text-align: center;
+}
+.intro-heading {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.8vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--sage);
+  margin-bottom: 10px;
+}
+.intro-body {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.intro-body + .intro-body {
+  margin-top: 10px;
+}
+
 /* Food ticker */
 .ticker-wrap {
   overflow: hidden;

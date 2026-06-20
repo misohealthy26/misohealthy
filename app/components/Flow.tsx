@@ -201,7 +201,14 @@ export default function Flow({
         {authEnabled && <NavAuth user={user} />}
       </nav>
 
-      <SectionTabs active={section} onChange={setSection} />
+      <SectionTabs active={section} onChange={(s) => { if (s === "make") restart(); setSection(s); }} />
+
+      {phase.kind === "step" && phase.index === 0 && section === "make" && (
+        <div className="intro-block">
+          <h2 className="intro-heading">Make the food you love work better for you.</h2>
+          <p className="intro-body">Food is one way we care for how we feel, function, and live. misohealthy helps you remake the meals you love with swaps that support your body, your goals, and your everyday life — from heart and gut health to balanced blood sugar, steady energy, and feeling good in your body.</p>
+        </div>
+      )}
 
       {section === "bake" ? (
         <BakeItMiso />
@@ -212,7 +219,7 @@ export default function Flow({
         <>
           {phase.index === 0 && <Hero />}
           {phase.index === 0 && <ThreeStepsSection />}
-          {phase.index === 0 && <SuperfoodsSection />}
+          {phase.index === 1 && <FoodTicker />}
           <main className="stage">
             {phase.index === 0 && (
               <HealthGoalStep
@@ -230,6 +237,7 @@ export default function Flow({
               />
             )}
           </main>
+          {phase.index === 0 && <SuperfoodsSection />}
         </>
       )}
 
@@ -675,7 +683,6 @@ const TICKER_FOODS = [
 ];
 
 function Hero() {
-  const doubled = [...TICKER_FOODS, ...TICKER_FOODS];
   return (
     <section className="hero">
       <h1 className="hero-display">
@@ -683,27 +690,26 @@ function Hero() {
         <br />
         <span className="hl-green">miso</span>.
       </h1>
-      <p className="hero-sub">
-        Eating the right foods can prevent, manage, and even reverse disease —
-        and the science backs it up. Miso has been a healing superfood for
-        thousands of years — proof that food is medicine. misohealthy is here
-        to help you <strong>make it miso</strong>: find simple swaps that keep
-        the flavors you love while making every meal work for your body.
-      </p>
-      <div className="ticker-wrap">
-        <div className="ticker-track">
-          {doubled.map((food, i) => (
-            <span key={i} className="ticker-item">
-              <span
-                className="ticker-dot"
-                style={{ background: food.color }}
-              />
-              {food.label}
-            </span>
-          ))}
-        </div>
-      </div>
+      <p className="hero-sub">Remake the meals you love with swaps that support how you feel, function, and live.</p>
+      <p className="hero-sub" style={{ marginTop: "12px" }}>misohealthy helps turn any dish into a version that works better for your body, your goals, and your everyday life — from heart and gut health to balanced blood sugar, steady energy, and feeling good in your body.</p>
+      <p className="hero-sub" style={{ marginTop: "12px" }}>To make it miso is simple: keep the food you love, and make the changes that work for you.</p>
     </section>
+  );
+}
+
+function FoodTicker() {
+  const doubled = [...TICKER_FOODS, ...TICKER_FOODS];
+  return (
+    <div className="ticker-wrap">
+      <div className="ticker-track">
+        {doubled.map((food, i) => (
+          <span key={i} className="ticker-item">
+            <span className="ticker-dot" style={{ background: food.color }} />
+            {food.label}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -775,7 +781,8 @@ function DishStep({
         if (canAdvance) onSubmit();
       }}
     >
-      <h2 className="step-title">what are you craving?</h2>
+      <h2 className="step-title">Enter any meal</h2>
+      <p className="step-sub" style={{ whiteSpace: "nowrap", fontSize: "13px", maxWidth: "none" }}>(e.g., mac and cheese, beef stroganoff, matzo ball soup, butter chicken)</p>
       <input
         ref={inputRef}
         className="step-input"
@@ -790,7 +797,7 @@ function DishStep({
           back
         </button>
         <button type="submit" className="btn-primary" disabled={!canAdvance}>
-          cook it <Arrow />
+          make it miso <Arrow />
         </button>
       </div>
       <div className="hint">

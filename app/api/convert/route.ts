@@ -94,7 +94,7 @@ export async function POST(request: Request) {
   try {
     const completion = await anthropic.messages.create({
       model: "claude-haiku-4-5",
-      max_tokens: 4000,
+      max_tokens: 3000,
       system: [
         {
           type: "text",
