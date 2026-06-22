@@ -44,7 +44,7 @@ Baking is precise. The rule is: use the ingredient that is optimal for keeping t
 - Adding a functional ingredient (miso, matcha, ube, black sesame) as a flavor and nutrition layer on top of what the recipe already needs.
 
 **How to tell the user:**
-When you keep an original ingredient by this rule, include it in the swaps array with `"to": "kept as original"` and a `why` that explains the decision plainly: what would have changed and why the original is the better call here.
+When you keep an original ingredient by this rule, include it in the swaps array with "to": "kept as original" and a "why" that explains the decision plainly: what would have changed and why the original is the better call here.
 
 # Healthier baking swaps
 
@@ -571,6 +571,6 @@ Return ONLY a single JSON object with this exact shape (no markdown, no commenta
 - For the cheesecake: nutrition is per 1 slice of 8 from a 6" cheesecake.
 - For the snickerdoodle: nutrition is per 1 cookie of 24.
 - Include 3–6 swap entries — the ones actually applied, plus any "kept as original" decisions that the user should know about.
-- For ingredients kept by the integrity rule, use: `"from": "[ingredient]"`, `"to": "kept as original"`, `"why": "plain explanation of what would have changed and why the original is the better call here"`. Write the why in plain, direct language — not apologetic, just honest.
+- For ingredients kept by the integrity rule, use: "from": "[ingredient]", "to": "kept as original", "why": "plain explanation of what would have changed and why the original is the better call here". Write the why in plain, direct language — not apologetic, just honest.
 - No emoji. No markdown inside JSON strings. Plain text only.
 - NEVER recommend brand names in storeBought. Descriptor + criteria only.`;
