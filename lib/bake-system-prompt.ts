@@ -120,7 +120,7 @@ When the user enters a type of cake, apply the transformation below. These are g
 - Swap white sugar for coconut sugar
 - Use Dutch-process cocoa or cacao powder (higher antioxidants, smoother flavor)
 - Frosting: dark chocolate ganache made with coconut cream instead of heavy cream
-- Botanical: rose water (½ tsp) stirred into the ganache
+- Botanical: pinch of cardamom or ½ tsp vanilla stirred into the ganache for warmth
 - Fruit: fresh raspberries on top or a tart cherry compote served alongside
 
 ## Red velvet cake → Butterfly Pea Flower Velvet Cake | 2 × 9" round pans · serves 10–12
@@ -160,7 +160,7 @@ When the user enters a type of cake, apply the transformation below. These are g
 - Add 1 tbsp white miso to the batter — miso and dark chocolate is a proven pairing; deepens cocoa flavor
 - Swap ⅓ AP flour for oat flour
 - Frosting: dark chocolate ganache made with coconut cream instead of heavy cream, or whipped avocado chocolate frosting (avocado + cacao + maple syrup + pinch of miso + vanilla, blended smooth)
-- Botanical: rose water (½ tsp) in the ganache; fresh raspberries on top
+- Botanical: pinch of cardamom in the ganache; fresh raspberries on top
 - Fruit: fresh raspberry or tart cherry compote served alongside
 
 ## Blood orange cake → Blood Orange Olive Oil Ricotta Cake | 9" round · serves 8
@@ -202,7 +202,7 @@ The meringue base requires egg whites and sugar — these are non-negotiable for
 - Add yuzu zest (or lemon zest) folded into the meringue before baking
 - Add 1 tsp cornstarch + 1 tsp white vinegar (classic pavlova technique — creates the marshmallow-soft center)
 - Topping: whipped coconut cream (refrigerate can overnight, whip the solid cream only) instead of heavy whipped cream
-- Botanical: dried rose petals and edible flowers (viola, pansy) scattered on top
+- Botanical: edible flowers (viola, pansy) scattered on top — tropical and delicate, not floral-sweet
 - Fruit: fresh passion fruit pulp poured over, fresh mango diced, lychee halves, kiwi — tropical fruit is the centerpiece
 
 # Bread guidance
@@ -286,9 +286,9 @@ Some desserts that users enter already carry the flavor profile we'd add. For th
 
 ## Mango Sago → Healthy Mango Sago | serves 4
 
-Closest Western equivalent for the "original" column: classic tapioca pudding (whole milk, sugar, eggs, vanilla, tapioca pearls).
+The original mango sago uses sweetened condensed milk, evaporated milk, and heavy cream — rich and delicious but high in refined sugar and saturated fat. The bake it miso version keeps the same creamy, tropical flavor by swapping those for coconut cream and Greek yogurt, and lets the ripe mango do the sweetening.
 
-Mango sago is already a relatively light dessert — the transformation is about reducing added sugar, swapping evaporated milk and heavy cream for coconut cream and Greek yogurt, and amplifying the mango and tropical fruit.
+Original column: use traditional Hong Kong–style mango sago ingredients (condensed milk, evaporated milk, heavy cream, white sugar, sago pearls, fresh mango) for nutrition comparison.
 
 Healthy version:
 - 2 large ripe mangoes — ½ pureed, ½ diced for topping (superfood)
@@ -309,10 +309,10 @@ Stir in the cooled sago pearls. Divide into bowls or glasses. Refrigerate at lea
 Top with diced fresh mango, passion fruit pulp, and lime zest before serving.
 
 Key swaps:
-- Evaporated milk + heavy cream → coconut cream + Greek yogurt: same richness, significantly more protein, lower saturated fat, no processed additives
-- White sugar (traditional recipe uses 3–4 tbsp) → no added sugar or 1 tbsp maple syrup: ripe mango and coconut cream carry the sweetness
-- Plain sago in cream → sago + chia seeds: invisible fiber boost, helps the mixture set without added thickeners
-- Botanical: lime zest in the base; passion fruit on top for tartness and visual texture
+- Condensed milk + evaporated milk + heavy cream → coconut cream + Greek yogurt: same richness and creaminess, dramatically less refined sugar and saturated fat, added protein
+- White sugar → none needed: ripe mango and coconut cream carry all the sweetness
+- Plain sago in cream → sago + chia seeds: invisible fiber boost, helps the mixture set naturally
+- Topping: tropical fruit only — fresh mango, passion fruit pulp, lime zest
 
 ## Date & Nut Truffles → Miso Date Truffles | makes ~20 truffles
 
@@ -349,9 +349,9 @@ Ingredients:
 - 1 tsp vanilla extract
 - 3 tbsp solid coconut cream
 - Pinch of salt
-- Optional: pinch of cardamom or ¼ tsp rose water
+- Optional: pinch of cardamom
 
-Topping: fresh raspberries, cacao nibs, dried rose petals, or crushed pistachios
+Topping: fresh raspberries, cacao nibs, or crushed pistachios
 
 Method:
 Blend all ingredients in a food processor or high-speed blender until completely smooth and silky — no green streaks. Scrape down sides and blend again.
