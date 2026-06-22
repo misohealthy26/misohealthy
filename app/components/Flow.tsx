@@ -121,11 +121,11 @@ export default function Flow({
           vegetarian,
         }),
       });
-      const json = await res.json();
       if (res.status === 401) {
         window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
         return;
       }
+      const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Something went wrong.");
       setPhase({
         kind: "summary",
@@ -403,11 +403,11 @@ function BakeItMiso({ user, authEnabled }: { user: FlowUser; authEnabled: boolea
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dish: bakeDish.trim() }),
       });
-      const json = await res.json();
       if (res.status === 401) {
         window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
         return;
       }
+      const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Something went wrong.");
       setBakeResult(json);
       setBakePhase("result");
