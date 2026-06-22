@@ -39,7 +39,10 @@ export async function POST(request: Request) {
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const bearer = request.headers.get("Authorization")?.replace("Bearer ", "");
+  const { data: { user } } = bearer
+    ? await supabase.auth.getUser(bearer)
+    : await supabase.auth.getUser();
   if (!user) {
     return Response.json({ error: "Sign in to generate recipes." }, { status: 401 });
   }

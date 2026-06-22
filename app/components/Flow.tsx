@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 import NavAuth from "./NavAuth";
 import HeartButton from "./HeartButton";
 import { SuperfoodsSection } from "./FoodIllustrations";
@@ -112,9 +113,13 @@ export default function Flow({
   async function generate(goals: HealthGoal[], vegetarian: boolean) {
     setPhase({ kind: "cooking" });
     try {
+      const supabase = createSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const authHeaders: Record<string, string> = { "Content-Type": "application/json" };
+      if (session?.access_token) authHeaders["Authorization"] = `Bearer ${session.access_token}`;
       const res = await fetch("/api/convert", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: authHeaders,
         body: JSON.stringify({
           dish: data.dish.trim(),
           healthGoals: goals,
@@ -398,9 +403,13 @@ function BakeItMiso({ user, authEnabled }: { user: FlowUser; authEnabled: boolea
     if (!bakeDish.trim()) return;
     setBakePhase("cooking");
     try {
+      const supabase = createSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const authHeaders: Record<string, string> = { "Content-Type": "application/json" };
+      if (session?.access_token) authHeaders["Authorization"] = `Bearer ${session.access_token}`;
       const res = await fetch("/api/bake", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: authHeaders,
         body: JSON.stringify({ dish: bakeDish.trim() }),
       });
       if (res.status === 401) {
