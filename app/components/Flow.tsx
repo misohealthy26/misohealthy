@@ -122,6 +122,10 @@ export default function Flow({
         }),
       });
       const json = await res.json();
+      if (res.status === 401) {
+        window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+        return;
+      }
       if (!res.ok) throw new Error(json?.error || "Something went wrong.");
       setPhase({
         kind: "summary",
@@ -210,8 +214,10 @@ export default function Flow({
         </div>
       )}
 
+      {phase.kind === "step" && phase.index === 0 && section === "make" && <FoodTicker />}
+
       {section === "bake" ? (
-        <BakeItMiso />
+        <BakeItMiso user={user} authEnabled={authEnabled} />
       ) : (
       <>
 
@@ -345,8 +351,10 @@ const BAKE_TICKER_ITEMS = [
   { label: "yuzu hibiscus angel food cake",color: "var(--amber)" },
   // pastries
   { label: "rose water blood orange tart", color: "var(--terracotta)" },
-  { label: "pistachio rose baklava",       color: "var(--sage)" },
-  { label: "cardamom orange scones",       color: "var(--amber)" },
+  { label: "rose pistachio baklava",        color: "var(--sage)" },
+  { label: "lemon pistachio bars",          color: "var(--amber)" },
+  { label: "lavender honey shortbread",     color: "var(--terracotta)" },
+  { label: "cardamom orange scones",        color: "var(--sage)" },
   // bread
   { label: "miso sesame sourdough",        color: "var(--terracotta)" },
   { label: "miso herb focaccia",           color: "var(--sage)" },
@@ -375,7 +383,7 @@ const BAKE_COOKING_LINES = [
   "writing it down for you…",
 ];
 
-function BakeItMiso() {
+function BakeItMiso({ user, authEnabled }: { user: FlowUser; authEnabled: boolean }) {
   const [bakePhase, setBakePhase] = useState<"input" | "cooking" | "result" | "error">("input");
   const [bakeDish, setBakeDish] = useState("");
   const [bakeResult, setBakeResult] = useState<ConvertResponse | null>(null);
@@ -396,6 +404,10 @@ function BakeItMiso() {
         body: JSON.stringify({ dish: bakeDish.trim() }),
       });
       const json = await res.json();
+      if (res.status === 401) {
+        window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+        return;
+      }
       if (!res.ok) throw new Error(json?.error || "Something went wrong.");
       setBakeResult(json);
       setBakePhase("result");
@@ -526,7 +538,7 @@ function BakeItMiso() {
   }
 
   if (bakePhase === "result" && bakeResult) {
-    return <BakeResult result={bakeResult} onRestart={restart} />;
+    return <BakeResult result={bakeResult} dish={bakeDish} user={user} authEnabled={authEnabled} onRestart={restart} />;
   }
 
   return null;
@@ -642,11 +654,24 @@ function RisingBread() {
 
 function BakeResult({
   result,
+  dish,
+  user,
+  authEnabled,
   onRestart,
 }: {
   result: ConvertResponse;
+  dish: string;
+  user: FlowUser;
+  authEnabled: boolean;
   onRestart: () => void;
 }) {
+  const savedPayload = {
+    healthy: result.healthy,
+    nutrition: result.nutrition,
+    nutritionMeta: result.nutritionMeta,
+    swaps: result.swaps,
+  };
+
   return (
     <main className="stage stage-summary bake-result-enter">
       <div className="summary">
@@ -659,6 +684,15 @@ function BakeResult({
               </div>
             )}
           </div>
+          {authEnabled && (
+            <HeartButton
+              dish={dish}
+              vegetarian={false}
+              healthGoals={[]}
+              payload={savedPayload}
+              signedIn={!!user}
+            />
+          )}
         </div>
 
         <div className="summary-grid">
@@ -671,18 +705,7 @@ function BakeResult({
             <h4>Bake it Miso</h4>
             <div className="swap-list">
               {result.swaps.map((s, i) => (
-                <div key={i} className="swap-item">
-                  <div className="swap-from">{s.from}</div>
-                  <div className="swap-to">→ {s.to}</div>
-                  <div className="swap-why">{s.why}</div>
-                  {s.goalTags && s.goalTags.length > 0 && (
-                    <div className="swap-tags">
-                      {s.goalTags.map((g) => (
-                        <span key={g} className="goal-pill">{g}</span>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <SwapItem key={i} swap={s} />
               ))}
             </div>
           </div>
@@ -718,6 +741,9 @@ function BakeResult({
         <div className="summary-foot">
           <button type="button" className="btn-ghost" onClick={onRestart}>
             try another dessert
+          </button>
+          <button type="button" className="btn-ghost btn-print" onClick={() => window.print()}>
+            <PrinterIcon /> print / save as PDF
           </button>
         </div>
       </div>
@@ -1111,20 +1137,7 @@ function Summary({
             <h4>Make it Miso</h4>
             <div className="swap-list">
               {result.swaps.map((s, i) => (
-                <div key={i} className="swap-item">
-                  <div className="swap-from">{s.from}</div>
-                  <div className="swap-to">→ {s.to}</div>
-                  <div className="swap-why">{s.why}</div>
-                  {s.goalTags && s.goalTags.length > 0 && (
-                    <div className="swap-tags">
-                      {s.goalTags.map((g) => (
-                        <span key={g} className="goal-pill">
-                          {g}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <SwapItem key={i} swap={s} />
               ))}
             </div>
           </div>
@@ -1178,6 +1191,9 @@ function Summary({
         <div className="summary-foot">
           <button type="button" className="btn-ghost" onClick={onRestart}>
             try another dish
+          </button>
+          <button type="button" className="btn-ghost btn-print" onClick={() => window.print()}>
+            <PrinterIcon /> print / save as PDF
           </button>
         </div>
       </div>
@@ -1439,6 +1455,30 @@ function SuperfoodModal({
   );
 }
 
+type Swap = { from: string; to: string; why: string; goalTags?: string[] };
+
+function SwapItem({ swap: s }: { swap: Swap }) {
+  const kept = s.to === "kept as original";
+  return (
+    <div className={`swap-item${kept ? " swap-item--kept" : ""}`}>
+      <div className="swap-from">{s.from}</div>
+      {kept ? (
+        <div className="swap-to swap-to--kept">kept as original</div>
+      ) : (
+        <div className="swap-to">→ {s.to}</div>
+      )}
+      <div className="swap-why">{s.why}</div>
+      {s.goalTags && s.goalTags.length > 0 && (
+        <div className="swap-tags">
+          {s.goalTags.map((g) => (
+            <span key={g} className="goal-pill">{g}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Arrow() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
@@ -1449,6 +1489,16 @@ function Arrow() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+}
+
+function PrinterIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+      <path d="M4 5V2.5a.5.5 0 01.5-.5h5a.5.5 0 01.5.5V5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <rect x="1.5" y="5" width="11" height="6.5" rx="1" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M4 8.5h6M4 10.5h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
     </svg>
   );
 }

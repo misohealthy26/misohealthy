@@ -3,6 +3,7 @@ import { SYSTEM_PROMPT } from "@/lib/system-prompt";
 import { consumeRateLimit, getClientIp } from "@/lib/rate-limit";
 import { isHealthGoal } from "@/lib/types";
 import { lookupOriginalNutrition, mergeUsdaOriginal } from "@/lib/usda";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -10,6 +11,7 @@ export const maxDuration = 60;
 // Per-IP cap on LLM calls. Each call costs real money — keep this tight.
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_SECONDS = 60 * 60; // 1 hour
+const DAILY_LIMIT = 10;
 
 type RequestBody = {
   dish?: unknown;
@@ -49,6 +51,27 @@ export async function POST(request: Request) {
     return Response.json(
       { error: "Please pick at least one health goal." },
       { status: 400 },
+    );
+  }
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return Response.json({ error: "Sign in to generate recipes." }, { status: 401 });
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  const { data: usage } = await supabase
+    .from("api_usage")
+    .select("count")
+    .eq("user_id", user.id)
+    .eq("date", today)
+    .maybeSingle();
+  const currentCount = (usage?.count as number) ?? 0;
+  if (currentCount >= DAILY_LIMIT) {
+    return Response.json(
+      { error: "You've reached your daily limit of 10 recipes. Come back tomorrow!" },
+      { status: 429 },
     );
   }
 
@@ -151,6 +174,10 @@ export async function POST(request: Request) {
         // USDA lookup failed — keep Claude's estimate, no crash
       }
     }
+
+    await supabase
+      .from("api_usage")
+      .upsert({ user_id: user.id, date: today, count: currentCount + 1 });
 
     return Response.json(parsed);
   } catch (err) {

@@ -1,12 +1,14 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { BAKE_SYSTEM_PROMPT } from "@/lib/bake-system-prompt";
 import { consumeRateLimit, getClientIp } from "@/lib/rate-limit";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_SECONDS = 60 * 60;
+const DAILY_LIMIT = 10;
 
 type RequestBody = {
   dish?: unknown;
@@ -33,6 +35,27 @@ export async function POST(request: Request) {
     return Response.json(
       { error: "Please enter a dessert or sweet (under 200 characters)." },
       { status: 400 },
+    );
+  }
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return Response.json({ error: "Sign in to generate recipes." }, { status: 401 });
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  const { data: usage } = await supabase
+    .from("api_usage")
+    .select("count")
+    .eq("user_id", user.id)
+    .eq("date", today)
+    .maybeSingle();
+  const currentCount = (usage?.count as number) ?? 0;
+  if (currentCount >= DAILY_LIMIT) {
+    return Response.json(
+      { error: "You've reached your daily limit of 10 recipes. Come back tomorrow!" },
+      { status: 429 },
     );
   }
 
@@ -104,6 +127,10 @@ export async function POST(request: Request) {
         { status: 502 },
       );
     }
+
+    await supabase
+      .from("api_usage")
+      .upsert({ user_id: user.id, date: today, count: currentCount + 1 });
 
     return Response.json(parsed);
   } catch (err) {
