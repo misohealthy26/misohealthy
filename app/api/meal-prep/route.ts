@@ -189,6 +189,7 @@ Return ONLY a single JSON object:
 
 Rules:
 - Exactly 2 sets, each yielding 3 meals.
+- The two sets must be as different as possible: different proteins (e.g. chicken thighs vs. salmon, or tofu vs. shrimp — never the same protein in both), different starches (e.g. wild rice vs. Japanese sweet potato — never the same starch in both), and different sauces/dressings (never the same sauce style or base). Treat this as a hard constraint.
 - Every set must include all six components: starch, vegetable, leafy green, pickled/fermented, protein, sauce.
 - batchPrep covers starch, vegetable, pickled/fermented, and protein. Leafy greens are always added fresh per meal.
 - shoppingList must be consolidated across both sets — if both use garlic, list it once with combined quantity.
