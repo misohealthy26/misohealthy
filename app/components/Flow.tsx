@@ -70,6 +70,7 @@ export default function Flow({
   authEnabled: boolean;
 }) {
   const [section, setSection] = useState<Section>("make");
+  const [bakeKey, setBakeKey] = useState(0);
   const [phase, setPhase] = useState<Phase>({ kind: "step", index: 0 });
   const [data, setData] = useState<FormData>({ dish: "", healthGoals: [] });
   const [autoSavePending, setAutoSavePending] = useState(false);
@@ -247,7 +248,7 @@ export default function Flow({
         {authEnabled && <NavAuth user={user} />}
       </nav>
 
-      <SectionTabs active={section} onChange={(s) => { if (s === "make") restart(); setSection(s); }} />
+      <SectionTabs active={section} onChange={(s) => { if (s === "make") restart(); if (s === "bake") setBakeKey(k => k + 1); setSection(s); }} />
 
       {phase.kind === "step" && phase.index === 0 && section === "make" && (
         <div className="intro-block">
@@ -259,7 +260,7 @@ export default function Flow({
       {phase.kind === "step" && phase.index === 0 && section === "make" && <FoodTicker />}
 
       {section === "bake" ? (
-        <BakeItMiso user={user} authEnabled={authEnabled} />
+        <BakeItMiso key={bakeKey} user={user} authEnabled={authEnabled} />
       ) : (
       <>
 
