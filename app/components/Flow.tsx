@@ -504,7 +504,7 @@ function BakeItMiso({ user, authEnabled }: { user: FlowUser; authEnabled: boolea
     },
     {
       category: "Bread",
-      dishes: ["sourdough", "focaccia", "jingalov hats", "banana bread"],
+      dishes: ["sourdough", "focaccia", "herby flatbread", "banana bread"],
     },
     {
       category: "No-bake",
