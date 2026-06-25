@@ -88,6 +88,71 @@ export type ConvertResponse = {
   swaps: SwapNote[];
 };
 
+// Meal prep response shape for /api/meal-prep
+export type MealPrepBatchItem = {
+  component: string;
+  name: string;
+  method: string;
+  superfood?: boolean;
+};
+
+export type MealPrepSauce = {
+  name: string;
+  recipe: string;
+};
+
+export type MealPrepSet = {
+  name: string;
+  meals: number;
+  batchPrep: MealPrepBatchItem[];
+  sauce: MealPrepSauce;
+  freshPerMeal: string[];
+  assembly: string;
+  healthNote: string;
+};
+
+export type ShoppingItem = {
+  name: string;
+  quantity: string;
+  usedIn?: string;
+};
+
+export type ShoppingCategory = {
+  category: string;
+  items: ShoppingItem[];
+};
+
+export type PrepScheduleItem = {
+  order: number;
+  task: string;
+  activeTime: string;
+  totalTime: string;
+  forSet?: string;
+  note?: string;
+};
+
+export type MealPrepNutrientLine = {
+  label: string;
+  value: string;
+  dv: string;
+};
+
+export type MealPrepNutritionRow = {
+  setName: string;
+  servings: number;
+  source: "estimate" | "usda";
+  rows: MealPrepNutrientLine[];
+};
+
+export type MealPrepResponse = {
+  theme: string;
+  sets: MealPrepSet[];
+  prepTips: string[];
+  shoppingList: ShoppingCategory[];
+  prepSchedule: PrepScheduleItem[];
+  nutrition: MealPrepNutritionRow[];
+};
+
 // What we persist under saved_recipes.payload. Healthy only.
 // Legacy rows may still carry an `original` field — readers should tolerate it.
 export type SavedRecipePayload = {

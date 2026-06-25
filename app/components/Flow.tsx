@@ -12,6 +12,11 @@ import {
   type HealthGoal,
   type HealthyRecipe,
   type IngredientLine,
+  type MealPrepResponse,
+  type MealPrepSet,
+  type ShoppingCategory,
+  type PrepScheduleItem,
+  type MealPrepNutritionRow,
   type SubRecipe,
 } from "@/lib/types";
 import {
@@ -36,12 +41,14 @@ type FormData = {
 type Phase =
   | { kind: "step"; index: 0 | 1 }
   | { kind: "cooking" }
+  | { kind: "mealPrepCooking" }
   | {
       kind: "summary";
       data: ConvertResponse;
       vegetarian: boolean;
       addedSuperfoodIds: string[];
     }
+  | { kind: "mealPrep"; data: MealPrepResponse }
   | { kind: "error"; message: string };
 
 const TOTAL_STEPS = 2;
@@ -95,7 +102,7 @@ export default function Flow({
   }
 
   function goBack() {
-    if (phase.kind === "summary" || phase.kind === "error") {
+    if (phase.kind === "summary" || phase.kind === "error" || phase.kind === "mealPrep") {
       setPhase({ kind: "step", index: 1 });
       return;
     }
@@ -151,7 +158,37 @@ export default function Flow({
     goNext();
   }
 
+  async function generateMealPrep() {
+    setPhase({ kind: "mealPrepCooking" });
+    try {
+      const authHeaders: Record<string, string> = { "Content-Type": "application/json" };
+      if (authEnabled) {
+        const supabase = createSupabaseClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) authHeaders["Authorization"] = `Bearer ${session.access_token}`;
+      }
+      const res = await fetch("/api/meal-prep", {
+        method: "POST",
+        headers: authHeaders,
+        body: JSON.stringify({ healthGoals: data.healthGoals }),
+      });
+      if (res.status === 401) {
+        window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+        return;
+      }
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || "Something went wrong.");
+      setPhase({ kind: "mealPrep", data: json });
+    } catch (err) {
+      setPhase({ kind: "error", message: err instanceof Error ? err.message : "Something went wrong." });
+    }
+  }
+
   function submit() {
+    if (data.dish.trim().toLowerCase() === "meal prep") {
+      void generateMealPrep();
+      return;
+    }
     void generate(data.healthGoals, false);
   }
 
@@ -244,6 +281,7 @@ export default function Flow({
                 onChange={(dish) => setData((d) => ({ ...d, dish }))}
                 onSubmit={submit}
                 onBack={goBack}
+                onMealPrep={() => void generateMealPrep()}
                 canAdvance={data.dish.trim().length > 0}
               />
             )}
@@ -256,6 +294,20 @@ export default function Flow({
         <main className="stage">
           <Cooking dish={data.dish} />
         </main>
+      )}
+
+      {phase.kind === "mealPrepCooking" && (
+        <main className="stage">
+          <MealPrepCooking />
+        </main>
+      )}
+
+      {phase.kind === "mealPrep" && (
+        <MealPrepResult
+          result={phase.data}
+          healthGoals={data.healthGoals}
+          onRestart={restart}
+        />
       )}
 
       {phase.kind === "error" && (
@@ -399,18 +451,22 @@ function BakeItMiso({ user, authEnabled }: { user: FlowUser; authEnabled: boolea
     if (bakePhase === "input") inputRef.current?.focus({ preventScroll: true });
   }, [bakePhase]);
 
-  async function submit() {
-    if (!bakeDish.trim()) return;
+  async function submit(dishOverride?: string) {
+    const dish = (dishOverride ?? bakeDish).trim();
+    if (!dish) return;
+    setBakeDish(dish);
     setBakePhase("cooking");
     try {
-      const supabase = createSupabaseClient();
-      const { data: { session } } = await supabase.auth.getSession();
       const authHeaders: Record<string, string> = { "Content-Type": "application/json" };
-      if (session?.access_token) authHeaders["Authorization"] = `Bearer ${session.access_token}`;
+      if (authEnabled) {
+        const supabase = createSupabaseClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) authHeaders["Authorization"] = `Bearer ${session.access_token}`;
+      }
       const res = await fetch("/api/bake", {
         method: "POST",
         headers: authHeaders,
-        body: JSON.stringify({ dish: bakeDish.trim() }),
+        body: JSON.stringify({ dish }),
       });
       if (res.status === 401) {
         window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
@@ -433,23 +489,28 @@ function BakeItMiso({ user, authEnabled }: { user: FlowUser; authEnabled: boolea
     setBakePhase("input");
   }
 
-  const BAKE_CATEGORIES: { label: string; placeholder: string }[] = [
-    { label: "Cakes", placeholder: "e.g., chocolate cake, carrot cake, chiffon…" },
-    { label: "Cookies", placeholder: "e.g., snickerdoodle, shortbread, brownies…" },
-    { label: "Pastries", placeholder: "e.g., lemon tart, scones, baklava, muffins…" },
-    { label: "Bread", placeholder: "e.g., sourdough, focaccia, banana bread…" },
-    { label: "No-bake Dessert", placeholder: "e.g., cheesecake, mango sago, coconut sorbet…" },
+  const BAKE_GROUPS: { category: string; dishes: string[] }[] = [
+    {
+      category: "Cakes",
+      dishes: ["chocolate cake", "carrot cake", "banana cake", "chiffon cake", "pound cake", "angel food cake", "red velvet cake", "blood orange ricotta cake", "persimmon chocolate almond cake", "avocado chocolate cake", "zucchini cake"],
+    },
+    {
+      category: "Cookies & Bars",
+      dishes: ["banana miso cookies", "shortbread", "brownies", "oatmeal cookies"],
+    },
+    {
+      category: "Pastries",
+      dishes: ["lemon tart", "baklava", "scones", "muffins"],
+    },
+    {
+      category: "Bread",
+      dishes: ["sourdough", "focaccia", "jingalov hats", "banana bread"],
+    },
+    {
+      category: "No-bake",
+      dishes: ["ube cheesecake", "matcha strawberry tiramisu", "mango sago", "coconut sorbet", "avocado chocolate mousse", "miso date truffles", "key lime pie", "dubai chocolate"],
+    },
   ];
-
-  const BAKE_SUBOPTIONS: Record<string, string[]> = {
-    Cakes: ["chocolate cake", "carrot cake", "banana cake", "pound cake", "chiffon cake", "angel food cake", "zucchini cake", "blood orange ricotta cake", "avocado chocolate cake", "red velvet cake"],
-    Cookies: ["snickerdoodle", "shortbread", "sugar cookies", "oatmeal cookies", "brownies"],
-    Pastries: ["lemon tart", "baklava", "scones", "muffins"],
-    Bread: ["sourdough", "focaccia", "banana bread"],
-    "No-bake Dessert": ["cheesecake", "tiramisu", "mango sago", "coconut sorbet", "avocado chocolate mousse", "date nut truffles"],
-  };
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const activePlaceholder = BAKE_CATEGORIES.find((c) => c.label === selectedCategory)?.placeholder ?? "type a dessert or baked item…";
 
   if (bakePhase === "input") {
     return (
@@ -461,7 +522,7 @@ function BakeItMiso({ user, authEnabled }: { user: FlowUser; authEnabled: boolea
             <span className="coming-soon-miso">miso.</span>
           </h1>
           <p className="coming-soon-sub">
-            Familiar favorites with a twist of smarter baking. Simplified recipes that taste delicious and work better for your body. Pick your baked goodies or chilled dessert.
+            Familiar favorites with a twist of smarter baking. Simplified recipes that taste delicious and work better for your body.
           </p>
         </div>
         <BakeTicker />
@@ -470,43 +531,31 @@ function BakeItMiso({ user, authEnabled }: { user: FlowUser; authEnabled: boolea
           className="step"
           onSubmit={(e) => { e.preventDefault(); void submit(); }}
         >
-          <h2 className="step-title">Choose what you&apos;re in the mood for.</h2>
-          <div className="chips" style={{ marginBottom: selectedCategory ? "10px" : "16px" }}>
-            {BAKE_CATEGORIES.map((cat) => (
-              <button
-                key={cat.label}
-                type="button"
-                className={`chip${selectedCategory === cat.label ? " is-selected" : ""}`}
-                onClick={() => {
-                  setSelectedCategory((prev) => prev === cat.label ? null : cat.label);
-                  inputRef.current?.focus({ preventScroll: true });
-                }}
-              >
-                {cat.label}
-              </button>
+          <h2 className="step-title">What are you craving?</h2>
+          <div className="bake-groups">
+            {BAKE_GROUPS.map((group) => (
+              <div key={group.category} className="bake-group">
+                <div className="bake-group-label">{group.category}</div>
+                <div className="chips chips-sub">
+                  {group.dishes.map((dish) => (
+                    <button
+                      key={dish}
+                      type="button"
+                      className="chip chip-sub"
+                      onClick={() => { void submit(dish); }}
+                    >
+                      {dish}
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
-          {selectedCategory && BAKE_SUBOPTIONS[selectedCategory] && (
-            <div className="chips chips-sub" style={{ marginBottom: "16px" }}>
-              {BAKE_SUBOPTIONS[selectedCategory].map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  className={`chip chip-sub${bakeDish === option ? " is-selected" : ""}`}
-                  onClick={() => {
-                    setBakeDish(option);
-                    inputRef.current?.focus({ preventScroll: true });
-                  }}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          )}
+          <p className="bake-or-type">or type anything</p>
           <input
             ref={inputRef}
             className="step-input"
-            placeholder={activePlaceholder}
+            placeholder="pavlova, sticky toffee pudding, crepes…"
             value={bakeDish}
             onChange={(e) => setBakeDish(e.target.value)}
             maxLength={200}
@@ -827,8 +876,8 @@ function ThreeStepsSection() {
         <div className="step-card-num">02</div>
         <h3 className="step-card-title">Tell us what you&apos;re craving</h3>
         <p className="step-card-desc">
-          Type any dish — beef stroganoff, ramen, pasta carbonara. We know them
-          all.
+          Type any dish — beef stroganoff, ramen, pasta carbonara — or we&apos;ll
+          plan a week of meals for you. Your choice.
         </p>
       </div>
       <div className="step-card c-red">
@@ -859,12 +908,14 @@ function DishStep({
   onChange,
   onSubmit,
   onBack,
+  onMealPrep,
   canAdvance,
 }: {
   value: string;
   onChange: (v: string) => void;
   onSubmit: () => void;
   onBack: () => void;
+  onMealPrep: () => void;
   canAdvance: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -901,6 +952,41 @@ function DishStep({
       </div>
       <div className="hint">
         press <kbd>enter</kbd> to cook it
+      </div>
+      <div style={{
+        marginTop: "24px",
+        fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
+        fontSize: "clamp(38px, 5.8vw, 60px)",
+        fontWeight: 400,
+        letterSpacing: "-0.025em",
+        lineHeight: 1.05,
+        color: "var(--ink-mute)",
+      }}>
+        OR Make your Week Easy with{" "}
+        <button
+          type="button"
+          onClick={onMealPrep}
+          style={{
+            display: "inline-block",
+            fontFamily: "var(--font-dm-sans), 'DM Sans', sans-serif",
+            fontSize: "clamp(14px, 1.5vw, 17px)",
+            fontWeight: 700,
+            color: "white",
+            background: "var(--amber)",
+            border: "none",
+            borderRadius: "999px",
+            padding: "12px 26px",
+            cursor: "pointer",
+            verticalAlign: "middle",
+            marginLeft: "12px",
+            position: "relative",
+            top: "-4px",
+            boxShadow: "0 4px 16px -4px rgba(13,148,136,0.45)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Miso Meal Prep
+        </button>
       </div>
     </form>
   );
@@ -1483,6 +1569,282 @@ function SwapItem({ swap: s }: { swap: Swap }) {
             <span key={g} className="goal-pill">{g}</span>
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+/* ─────────── meal prep ─────────── */
+
+const MEAL_PREP_COOKING_LINES = [
+  "planning your week…",
+  "picking the best components…",
+  "building your bowl builds…",
+  "writing it all down for you…",
+];
+
+function MealPrepCooking() {
+  const [lineIndex, setLineIndex] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => {
+      setLineIndex((i) => (i + 1) % MEAL_PREP_COOKING_LINES.length);
+    }, 1800);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="cooking">
+      <SteamingPot />
+      <div className="cooking-line">{MEAL_PREP_COOKING_LINES[lineIndex]}</div>
+      <div className="cooking-sub">prepping your week</div>
+    </div>
+  );
+}
+
+function MealPrepResult({
+  result,
+  healthGoals,
+  onRestart,
+}: {
+  result: MealPrepResponse;
+  healthGoals: HealthGoal[];
+  onRestart: () => void;
+}) {
+  return (
+    <main className="stage stage-summary">
+      <div className="summary">
+        <div className="summary-head">
+          <div>
+            <h1 className="summary-title">{result.theme}</h1>
+            <div className="summary-tags">
+              {healthGoals.map((g) => (
+                <span key={g} className="summary-tag summary-tag-goal">{g}</span>
+              ))}
+              <span className="summary-tag">2 bowl builds · 3 meals each</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="summary-grid">
+          {result.sets.map((set, i) => (
+            <MealPrepSetCard key={i} set={set} />
+          ))}
+        </div>
+
+        {result.prepSchedule?.length > 0 && (
+          <div className="swaps-card meal-prep-section">
+            <h4>prep schedule</h4>
+            <div className="meal-prep-schedule-list">
+              {result.prepSchedule.map((item) => (
+                <div key={item.order} className="meal-prep-schedule-item">
+                  <div className="meal-prep-schedule-num">{item.order}</div>
+                  <div className="meal-prep-schedule-body">
+                    <div className="meal-prep-schedule-task">
+                      {item.task}
+                      {item.forSet && item.forSet !== "both" && (
+                        <span className="meal-prep-schedule-for">{item.forSet}</span>
+                      )}
+                    </div>
+                    <div className="meal-prep-schedule-times">
+                      <span>active: {item.activeTime}</span>
+                      <span className="meal-prep-schedule-dot">·</span>
+                      <span>total: {item.totalTime}</span>
+                    </div>
+                    {item.note && <div className="meal-prep-schedule-note">{item.note}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.shoppingList?.length > 0 && (
+          <div className="swaps-card meal-prep-section">
+            <h4>shopping list</h4>
+            <div className="meal-prep-shopping-grid">
+              {result.shoppingList.map((cat) => (
+                <div key={cat.category} className="meal-prep-shopping-cat">
+                  <div className="meal-prep-shopping-cat-label">{cat.category}</div>
+                  <ul className="meal-prep-shopping-items">
+                    {cat.items.map((item, i) => (
+                      <li key={i}>
+                        <span className="meal-prep-shopping-qty">{item.quantity}</span>
+                        <span className="meal-prep-shopping-name">{item.name}</span>
+                        {item.usedIn && item.usedIn !== "both" && (
+                          <span className="meal-prep-shopping-used">{item.usedIn}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {result.nutrition?.length > 0 && (
+          <div className="nutrition-card meal-prep-section">
+            <div className="nutrition-heading">
+              <h4>nutrition per serving</h4>
+              {result.nutrition.some((r) => r.source === "usda") ? (
+                <span className="usda-badge">Powered by USDA</span>
+              ) : (
+                <span className="usda-badge">Miso Healthy estimate</span>
+              )}
+            </div>
+            <div className="meal-prep-nutrition-grid">
+              {result.nutrition.map((row) => (
+                <div key={row.setName} className="meal-prep-nutrition-set">
+                  <div className="meal-prep-nutrition-set-name">
+                    {row.setName}
+                    {row.source === "usda" && (
+                      <span className="mp-usda-pill">USDA</span>
+                    )}
+                  </div>
+                  {row.rows.map((nutrient) => {
+                    const pctNum = parseInt(nutrient.dv, 10) || 0;
+                    const barWidth = Math.min(pctNum, 100);
+                    return (
+                      <div key={nutrient.label} className="meal-prep-nutrition-row">
+                        <span className="mp-nutrient-label">{nutrient.label}</span>
+                        <div className="mp-nutrient-bar-wrap">
+                          <div className="mp-nutrient-bar" style={{ width: `${barWidth}%` }} />
+                        </div>
+                        <span className="mp-nutrient-value">{nutrient.value}</span>
+                        <span className="mp-nutrient-dv">{nutrient.dv}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+            <p className="nutrition-source">
+              % daily values based on a 2,000 kcal diet (FDA) ·{" "}
+              {result.nutrition.some((r) => r.source === "usda")
+                ? "Values sourced from USDA FoodData Central where available"
+                : "Estimated by Miso Healthy based on ingredients · not a substitute for professional nutrition advice"}
+            </p>
+          </div>
+        )}
+
+        {result.prepTips?.length > 0 && (
+          <div className="swaps-card meal-prep-section">
+            <h4>prep day tips</h4>
+            <ol className="meal-prep-tips-list">
+              {result.prepTips.map((tip, i) => (
+                <li key={i}>{tip}</li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        <p className="disclaimer">Recipes are informational — not medical or dietary advice.</p>
+
+        <div className="summary-foot">
+          <button type="button" className="btn-ghost" onClick={onRestart}>
+            plan another week
+          </button>
+          <button type="button" className="btn-ghost btn-print" onClick={() => window.print()}>
+            <PrinterIcon /> print / save as PDF
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+const PREP_CATEGORY_ORDER = ["starch", "protein", "vegetable", "pickled", "fermented", "other"];
+
+function MealPrepSetCard({ set }: { set: MealPrepSet }) {
+  const [sauceOpen, setSauceOpen] = useState(false);
+
+  // Group items by component category, preserving the fixed display order
+  const grouped = PREP_CATEGORY_ORDER
+    .map((cat) => ({
+      category: cat,
+      items: set.batchPrep.filter(
+        (item) => (item.component ?? "other").toLowerCase() === cat
+      ),
+    }))
+    .filter((g) => g.items.length > 0);
+
+  // Add any items whose component doesn't match a known category
+  const knownItems = new Set(PREP_CATEGORY_ORDER);
+  const extraItems = set.batchPrep.filter(
+    (item) => !knownItems.has((item.component ?? "other").toLowerCase())
+  );
+  if (extraItems.length > 0) {
+    grouped.push({ category: "other", items: extraItems });
+  }
+
+  // Running step number across all categories
+  let stepNum = 0;
+
+  return (
+    <div className="recipe-card is-healthy">
+      <p className="recipe-card-label">bowl build</p>
+      <h2 className="recipe-card-title">{set.name}</h2>
+      <p className="recipe-card-servings">makes {set.meals} meals</p>
+
+      <h4>batch prep</h4>
+      <div className="meal-prep-batch-list">
+        {grouped.map((group) => (
+          <div key={group.category} className="meal-prep-category-group">
+            <div className="meal-prep-category-label">{group.category}</div>
+            {group.items.map((item) => {
+              stepNum += 1;
+              const num = stepNum;
+              return (
+                <div key={item.name} className="meal-prep-batch-item">
+                  <div className="meal-prep-batch-head">
+                    <span className="meal-prep-step-num">{num}</span>
+                    <span className="meal-prep-batch-name">{item.name}</span>
+                    {item.superfood && <span className="ing-pill ing-pill-superfood">superfood</span>}
+                  </div>
+                  <p className="meal-prep-batch-method">{item.method}</p>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      <h4>sauce</h4>
+      <div className="meal-prep-sauce-wrap">
+        <button
+          type="button"
+          className="make-your-miso-btn"
+          onClick={() => setSauceOpen((o) => !o)}
+          aria-expanded={sauceOpen}
+        >
+          {sauceOpen ? "close" : `${set.sauce.name} — see recipe`}
+        </button>
+        {sauceOpen && (
+          <div className="sub-recipe" style={{ marginTop: "10px" }}>
+            <div className="sub-recipe-head">
+              <span className="sub-recipe-tag">miso homemade</span>
+              <span className="sub-recipe-name">{set.sauce.name}</span>
+            </div>
+            <div className="sub-recipe-body">
+              <p style={{ fontSize: "13px", lineHeight: "1.7" }}>{set.sauce.recipe}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <h4>fresh per meal</h4>
+      <ul className="meal-prep-fresh-list">
+        {set.freshPerMeal.map((item, i) => {
+          const label = typeof item === "string" ? item : (item as { item: string }).item;
+          return <li key={i}>{label}</li>;
+        })}
+      </ul>
+
+      <h4>assembly</h4>
+      <p style={{ fontSize: "14px", lineHeight: "1.65", marginBottom: "14px" }}>{set.assembly}</p>
+
+      {set.healthNote && (
+        <div className="meal-prep-health-note">{set.healthNote}</div>
       )}
     </div>
   );

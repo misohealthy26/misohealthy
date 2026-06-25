@@ -488,6 +488,35 @@ body::after {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 6px 16px -4px rgba(13, 148, 136, 0.4);
 }
 
+/* ── bake groups ─────────────────────────────── */
+.bake-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.bake-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bake-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.bake-or-type {
+  font-size: 12px;
+  color: var(--ink-mute);
+  margin: 0 0 10px;
+  text-align: center;
+}
+
 /* ── step actions ────────────────────────────── */
 .step-actions {
   display: flex;
@@ -2607,6 +2636,384 @@ body::after {
     border: 1px solid #d1fae5;
   }
 
+  /* meal prep print */
+  .meal-prep-shopping-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .meal-prep-nutrition-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .meal-prep-schedule-item,
+  .meal-prep-shopping-items li,
+  .meal-prep-nutrition-row {
+    break-inside: avoid;
+  }
+  .meal-prep-suggest,
+  .meal-prep-health-note { display: none; }
+}
+
+/* ── meal prep ──────────────────────────────────── */
+
+.meal-prep-suggest {
+  margin: 24px 0 0;
+  font-family: var(--serif);
+  font-size: clamp(38px, 5.8vw, 60px);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: var(--ink-mute);
+}
+
+.meal-prep-suggest-btn {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: clamp(14px, 1.5vw, 17px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: white;
+  background: var(--amber);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 12px 26px;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-left: 12px;
+  transition: background 0.2s var(--ease), transform 0.15s var(--ease);
+  position: relative;
+  top: -4px;
+  box-shadow: 0 4px 16px -4px rgba(13, 148, 136, 0.45);
+  white-space: nowrap;
+}
+
+.meal-prep-suggest-btn:hover {
+  background: var(--amber-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px -4px rgba(13, 148, 136, 0.5);
+}
+
+.meal-prep-batch-list {
+  margin: 0 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.meal-prep-category-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meal-prep-category-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--amber-soft);
+}
+
+.meal-prep-batch-item {
+  padding: 12px 14px;
+  background: var(--line-soft);
+  border-radius: var(--radius-sm);
+}
+
+.meal-prep-batch-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.meal-prep-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.meal-prep-batch-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.meal-prep-batch-method {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin: 0;
+  padding-left: 30px;
+}
+
+.meal-prep-sauce-wrap {
+  margin-bottom: 4px;
+}
+
+.meal-prep-fresh-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.meal-prep-fresh-list li {
+  font-size: 13px;
+  padding: 3px 10px;
+  background: var(--sage-tint);
+  color: var(--sage);
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+}
+
+.meal-prep-health-note {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  background: var(--amber-soft);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+}
+
+.meal-prep-tips-list {
+  padding-left: 18px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meal-prep-tips-list li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.meal-prep-section {
+  margin-bottom: 18px;
+}
+
+/* ── prep schedule ── */
+.meal-prep-schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.meal-prep-schedule-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.meal-prep-schedule-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.meal-prep-schedule-body {
+  flex: 1;
+}
+
+.meal-prep-schedule-task {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.meal-prep-schedule-for {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 12%, transparent);
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  font-style: normal;
+}
+
+.meal-prep-schedule-times {
+  font-size: 12px;
+  color: var(--ink-mute);
+  display: flex;
+  gap: 6px;
+}
+
+.meal-prep-schedule-dot {
+  opacity: 0.4;
+}
+
+.meal-prep-schedule-note {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 3px;
+  font-style: italic;
+}
+
+/* ── shopping list ── */
+.meal-prep-shopping-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px 32px;
+  margin-top: 8px;
+}
+
+.meal-prep-shopping-cat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--amber-soft);
+}
+
+.meal-prep-shopping-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.meal-prep-shopping-items li {
+  display: block;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.meal-prep-shopping-qty {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.meal-prep-shopping-name {
+  color: var(--ink-soft);
+  margin-left: 4px;
+}
+
+.meal-prep-shopping-used {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-mute);
+  font-style: italic;
+  margin-top: 1px;
+}
+
+/* ── nutrition per serving ── */
+.meal-prep-nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 8px 0 12px;
+}
+
+.meal-prep-nutrition-set {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meal-prep-nutrition-set-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: capitalize;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.meal-prep-nutrition-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 58px 34px;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+  padding: 3px 0;
+}
+
+.mp-nutrient-label {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.mp-nutrient-bar-wrap {
+  height: 5px;
+  border-radius: 9999px;
+  background: rgba(0,0,0,0.07);
+  overflow: hidden;
+}
+
+.mp-nutrient-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--amber);
+  transition: width 0.4s ease;
+}
+
+.mp-nutrient-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mp-nutrient-dv {
+  font-size: 11px;
+  color: var(--ink-mute);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mp-usda-pill {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--amber);
+  color: white;
+  border-radius: 999px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+@media print {
   /* small branding header at top of print */
   .summary-head::before {
     content: "misohealthy";

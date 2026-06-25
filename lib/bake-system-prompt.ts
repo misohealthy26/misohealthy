@@ -54,8 +54,24 @@ Apply these only where they improve or are neutral to the result. Never apply a 
 - **White sugar in liquid or sauce contexts** → **pure maple syrup**. Only use maple syrup where a liquid sweetener is appropriate — it adds moisture, so it cannot replace a dry sugar without adjusting. NEVER agave.
 - **Powdered sugar in frostings, glazes, or stabilized toppings** → **keep as original**. Powdered sugar is structural in these contexts: it is dry, contains cornstarch, absorbs moisture, and determines whether a frosting holds its shape and a glaze sets properly. Maple syrup or any liquid sweetener cannot replace it without making the frosting runny and the glaze permanently sticky. The nutritional difference is negligible — keep the original and note it.
 - **All-purpose flour** → keep at least ⅔ AP flour for structure; swap up to ⅓ with oat flour (adds beta-glucan and moisture retention, improves chewy texture) or almond flour (in nut-forward or no-gluten recipes).
-- **Cream cheese (in no-bake fillings)** → **coconut cream + full-fat Greek yogurt**. Coconut cream sets firm when chilled and adds richness; Greek yogurt adds tang and protein. No eggs needed. Sets overnight in the refrigerator.
-- **Graham cracker or Biscoff cookie crust** → **almond flour + date sugar + melted coconut oil + pinch of salt**. Press firmly into pan, chill 20 minutes before filling. Sets cleanly, higher protein and fiber than a cookie crust.
+- **Cream cheese (in no-bake fillings)** → **Cashew Cream Cheese** (see sub-recipe below — prepare 12–24 hours ahead). Fermented, tangy, and structurally solid when chilled. Far superior to the coconut cream + Greek yogurt shortcut for any recipe where cream cheese is the star.
+- **Graham cracker or Biscoff cookie crust** → **almond flour + Medjool dates + melted coconut oil + pinch of salt**. Pulse in a food processor until it holds when squeezed. Press firmly into pan and chill 20 minutes before filling. Higher protein and fiber than any cookie crust. For a chocolate crust add ¼ cup cacao powder. For a pecan crust use raw pecans instead of almonds.
+- **Whipped cream** → **Miso Whipped Cream** (see sub-recipe below). Cashew and coconut cream base, stabilized with agar so it holds its shape.
+
+### Cashew Cream Cheese (sub-recipe — emit when used, note it must be prepared 12–24 hours ahead)
+The primary no-bake cream cheese swap for fillings, cheesecakes, and tarts. Fermented, tangy, and firm when chilled.
+- 2 cups raw cashews, soaked overnight
+- ⅓ cup plain kombucha
+- 3 Tbsp lemon juice
+- 2 Tbsp minced shallot
+- 1 Tbsp nutritional yeast
+- ¾ tsp salt
+- ½ tsp probiotic powder
+Blend until completely smooth. Ferment uncovered or loosely covered at room temperature 12–24 hours until pleasantly tangy. Refrigerate until ready to use. Yields approximately 18 oz / 510g (about 2 cups).
+
+### Miso Whipped Cream (sub-recipe — emit when used)
+Base: ½ cup raw cashews (soaked 8–12 hours) + ½ cup cold coconut cream (solid part only) + ¼ cup water (add gradually while blending). Stabilizer: 1½ tsp agar powder + 2 Tbsp water. Flavor: 1–2 Tbsp maple syrup + 1 tsp vanilla extract + pinch salt. Optional: 1 tsp ground flax or inulin + 1 tsp lemon juice.
+Method: Blend soaked cashews with a little water until completely silky. Add coconut cream, vanilla, maple syrup, salt, lemon juice; blend until fully emulsified. In a small saucepan combine agar and 2 Tbsp water; bring to a boil, simmer 2–3 minutes until fully dissolved. With blender running, slowly stream in hot agar; blend 10–15 seconds only. Refrigerate 20–30 minutes until slightly set, then whip with a hand mixer until light and fluffy.
 - **Butter** → **brown butter** when the recipe allows. Same quantity, dramatically more flavor — nutty, caramel, complex. Justifies using less sugar overall.
 - **Whole eggs (in cookies)** → **egg yolk only** when reducing eggs. Yolk carries fat-soluble vitamins, choline, and richness. Omitting whites improves chewiness.
 - **Granulated sugar for rolling** → **turbinado sugar**. Larger crystals create a pronounced crunchy crust on cookies. A texture upgrade, not just a nutrition swap.
@@ -187,6 +203,37 @@ This is Eda's personal recipe — follow it precisely. It is a cross between a c
 - Added cardamom and orange blossom water (botanical lift that complements the blood orange without overpowering)
 - Crushed pistachios on top (healthy fat, color contrast, textural crunch)
 
+## Caprese torta → Persimmon Chocolate Almond Cake | 8" springform · serves 8–10
+
+No butter. No AP flour. The persimmon replaces both added sugar and moisture — use only Hachiya persimmons (the elongated kind) at full ripeness, when the flesh is translucent and spoon-soft. Under-ripe Hachiya is astringent and will ruin the cake. Use classic Italian caprese torta (almond flour, dark chocolate, butter, eggs, sugar) for the original nutrition comparison.
+
+Dry:
+- 2 cups (200g) almond flour (superfood, goalTags: heart health, brain health)
+- ¼ cup (25g) unsweetened cacao powder (superfood, goalTags: brain health, heart health)
+- 1 tsp baking powder
+- ¼ tsp salt
+- 1 Tbsp ground flax (superfood, goalTags: heart health, gut health)
+
+Wet:
+- 3 whole eggs + 2 egg whites
+- ½ cup (120g) very ripe Hachiya persimmon purée — spoon-soft only (goalTags: brain health)
+- ⅓ cup maple syrup
+- 3 Tbsp extra virgin olive oil
+- 1 tsp vanilla extract
+- ½–1 tsp finely grated yuzu zest (or lemon zest)
+- 1 tsp espresso powder dissolved in 1 tsp hot water (optional — deepens chocolate)
+
+Chocolate:
+- 80–100g dark chocolate (70–85%), melted and slightly cooled (superfood, goalTags: brain health, heart health)
+
+Method: Preheat oven to 325°F. Grease or line an 8" springform pan. Combine all dry ingredients in a bowl. In a separate bowl whisk all wet ingredients until smooth. Fold dry into wet. Add melted chocolate and fold until just incorporated — do not overmix. Pour into pan. Bake 30–40 minutes until edges are set and the center is slightly soft (fudgy texture is correct for this cake). Cool completely in the pan — it will firm up. Chill 2–4 hours before slicing for cleanest cuts.
+
+Key swaps:
+- Butter → olive oil (heart-healthy fat, keeps the crumb moist)
+- White sugar → persimmon purée + maple syrup (persimmon provides natural sweetness and moisture; much less added sugar than the original)
+- AP flour → almond flour + ground flax (gluten-free; almond flour gives the dense, fudgy crumb caprese is known for; flax adds fiber invisibly)
+- Added yuzu zest (lifts the chocolate without competing)
+
 ## Meringue / Pavlova → Yuzu Passion Fruit Pavlova | 9–10" disc · serves 8
 The meringue base requires egg whites and sugar — these are non-negotiable for structure. Do not swap them out.
 - Reduce white sugar by 10–15% at most — any more and the meringue will weep or collapse
@@ -232,6 +279,47 @@ Use the Miso Sourdough Starter for a slow, overnight cold-proof focaccia. The re
 - Botanical: fresh thyme or rosemary pressed into the dimples
 - Fruit: optional — thinly sliced cherry tomatoes or figs pressed in before baking
 - Bake at 450°F on a rack in the lower third of the oven, 22–25 minutes until deeply golden and pulling away from the pan edges
+
+## Flatbread / Armenian herb flatbread → Herby Jingalov Hats | makes 4 flatbreads
+
+Recipe from Ara Zada / #LavashBook. Jingalov hats are thin hand-held flatbreads stuffed with a generous amount of minced fresh herbs and greens — one of the most naturally nutritious things you can make. The dough is simple and unleavened; the filling does all the work. The bake it miso version keeps the spirit of the original precisely and layers in superfoods and anti-inflammatory herbs where they fit without changing the character of the bread.
+
+**Dough:**
+- 1½ cups all-purpose flour
+- 1 tsp salt
+- ⅔ cup water
+
+**Filling (8 cups total — finely minced):**
+Use any combination of: dill, flat-leaf parsley, dandelion greens, spinach, cilantro, Thai basil, sorrel, green onion
+- Salt and black pepper to taste
+- ½ tsp paprika
+- ¼–½ tsp chili flakes
+- 1 Tbsp lemon juice
+- 1½ Tbsp olive oil or neutral oil
+
+**Method:**
+Combine water and salt in a bowl. Add flour and knead in the bowl until a sticky dough forms. Turn onto a lightly floured surface; knead until smooth, about 2–3 minutes. Oil the bowl, return the dough, cover with a damp paper towel. Rest 1 hour at room temperature.
+While the dough rests, finely mince all greens and herbs. Season with salt, pepper, paprika, chili flakes, lemon juice, and oil. Toss well.
+Divide dough into 4 equal pieces. Roll each into an 8-inch circle, about ¼-inch thick. Mound the filling in the center of each round. Fold and pinch the edges tightly into a football shape; flatten gently with your palm or rolling pin until about ½-inch thick.
+Cook in a dry hot pan or cast iron skillet, seam side down, 2–3 minutes per side until the outside is evenly browned with dark spots and the greens inside are just wilted. Serve immediately — best eaten warm.
+
+**Make It Miso upgrades (apply any or all):**
+
+- **Miso in the dough** — dissolve 1 tsp white miso in the water before mixing with flour. Adds fermented depth and a barely-there umami note that deepens the herb flavor without changing the texture or color of the dough.
+
+- **Superfood greens in the filling** — swap some of the spinach for moringa powder (½ tsp stirred into the herb mixture — invisible, high in iron and amino acids) or add a large handful of watercress (peppery, anti-inflammatory, high vitamin K). Dandelion greens are already a superfood — prioritize them when available.
+
+- **Anti-inflammatory herb priority** — lean toward turmeric leaves (if available — grassy, mild, brilliant yellow when fresh), Thai basil (antioxidants, slightly anise), sorrel (high vitamin C, bright and lemony), and green onion as the dominant herbs.
+
+- **Invisible fiber boost** — stir 1 Tbsp ground flaxseed or hemp seeds into the minced filling before stuffing. Disappears completely into the greens; adds omega-3s and fiber.
+
+- **Black sesame dough** — add 1 Tbsp black sesame seeds to the dough when kneading. Adds nuttiness, visual flecks, and a small calcium boost.
+
+- **Sesame oil finish** — brush each flatbread lightly with sesame oil the moment it comes off the pan. Adds a nutty aroma and a slight sheen.
+
+- **Miso-yogurt dipping sauce** — whisk 1 tsp white miso into ½ cup plain Greek yogurt with a squeeze of lemon and a pinch of chili. Serve alongside. Adds protein and a cooling contrast to the herb-packed interior.
+
+- **Meal prep note** — jingalov hats are a natural meal prep component. Make a double batch of filling and keep it refrigerated for up to 3 days. Roll and cook flatbreads fresh per meal — they take under 10 minutes from rolling to plate.
 
 ## Tiramisu → Matcha Strawberry Tiramisu
 
@@ -328,6 +416,41 @@ Key swaps vs. classic chocolate truffles:
 - White sugar → none: dates provide all the sweetness
 - Miso: small amount deepens the cacao flavor without being detectable
 
+## Dubai chocolate → Dark Chocolate Avocado Maca Pistachio Kataifi | makes 12 pieces
+
+The original Dubai chocolate bar is milk chocolate + pistachio cream + toasted kataifi + tahini — viral, indulgent, and heavily butter-based. This version keeps the architecture (crisp kataifi, silky pistachio filling, chocolate shell) and replaces the saturated fat base with avocado. Maca adds a malty, caramel-like depth without any added sugar. The dark chocolate makes the whole thing taste more serious. No oven needed. Sets in the refrigerator.
+
+Use classic Dubai chocolate bar (milk chocolate, pistachio paste, tahini, butter, kataifi) for the original nutrition comparison column.
+
+Toasted Kataifi:
+- 80g kataifi (shredded phyllo), threads pulled apart loosely
+- 2 Tbsp melted coconut oil
+- Pinch of salt
+Toss kataifi threads with coconut oil and salt. Toast in a dry skillet over medium heat, stirring constantly, 6–8 minutes until uniformly golden and crisp. Alternatively spread on parchment and roast at 350°F for 10–12 minutes, tossing once. Cool completely — kataifi must be fully cool before folding into the filling or it softens and loses its crunch.
+
+Pistachio Avocado Maca Filling:
+- 1 large ripe avocado (about 200g) (superfood, goalTags: heart health, brain health)
+- ½ cup raw unsalted pistachio paste or finely ground raw pistachios (superfood, goalTags: brain health, heart health)
+- 2 Tbsp maple syrup
+- 1 Tbsp white miso (superfood, goalTags: gut health)
+- 2 tsp maca powder (superfood, goalTags: brain health)
+- 1 tsp vanilla extract
+- 1–2 Tbsp coconut cream (to loosen if needed)
+- Pinch of salt
+Blend avocado, pistachio paste, maple syrup, miso, maca, vanilla, and salt until completely smooth and silky. Add coconut cream a tablespoon at a time if too thick to spread. It should be rich, slightly salty, lightly sweet with a malty undertone. Fold in ¾ of the toasted kataifi; reserve the rest for the top layer.
+
+Chocolate Shell:
+- 200g dark chocolate (70–85%), melted (superfood, goalTags: brain health, heart health)
+
+Assembly:
+Line an 8×4" loaf pan with parchment, leaving overhang on both sides. Pour half the melted chocolate in and tilt to coat the bottom and about 1" up the sides. Refrigerate 8–10 minutes until fully set. Spoon the pistachio-avocado filling over the set chocolate layer; press evenly to the edges (about ¾" thick). Scatter the reserved toasted kataifi over the filling and press lightly. Pour remaining chocolate over everything, covering completely. Tap the pan firmly twice to settle. Refrigerate at least 2 hours or overnight. Lift out using parchment overhang. Slice with a warm knife — each piece should show the cross-section of dark chocolate, kataifi-studded filling, dark chocolate.
+
+Key swaps:
+- Milk chocolate → dark chocolate 70–85%: less sugar, more antioxidants, bitterness balances the rich filling
+- Butter (for kataifi toasting) → coconut oil: same crispness, dairy-free
+- Tahini + butter filling → avocado + pistachio + maca: avocado carries the same fat richness without saturated fat; maca adds malty depth; miso amplifies the pistachio without tasting of miso
+- White sugar → maple syrup: less quantity needed
+
 ## Avocado chocolate mousse → Dark Chocolate Avocado Mousse | serves 4
 
 No oven. No eggs. Ready in 15 minutes, best after 1 hour chilled. The avocado provides all the creaminess — it disappears completely into the chocolate.
@@ -410,36 +533,40 @@ When the user enters one of these dishes (or close variants), apply these specif
 Ingredients: 2¾ cups (345g) all-purpose flour, 2 tsp cream of tartar, 1 tsp baking soda, ¼ tsp salt, 1 cup (225g) unsalted butter softened, 1½ cups (300g) white granulated sugar, 2 large eggs, 1 tsp vanilla extract, 3 tbsp white granulated sugar + 1½ tsp ground cinnamon for rolling.
 Method: Preheat oven to 375°F. Whisk dry ingredients. Beat butter and sugar until light and fluffy. Beat in eggs and vanilla. Add flour mixture and mix on low until just combined. Roll into balls (~40g each), coat in cinnamon-sugar. Bake 10–12 minutes.
 
-**Bake it miso version (Banana Miso Cookies, makes ~24 cookies):**
+**Bake it miso version (Brown Butter White Miso Banana Cookies, makes ~24 cookies):**
 
-Ingredients:
-- 1 large very ripe banana, ~150g peeled — cooked down to 85g concentrate (superfood, goalTags: brain health)
+Banana concentrate:
+- 1 large very ripe banana (~150g peeled) — cooked down to 85g (superfood, goalTags: brain health)
+- 1 tsp granulated sugar (optional — for more caramelized banana flavor)
+Mash banana in a small pan. Add optional sugar. Cook over medium heat, stirring often, until thick, glossy, and jammy — reduced to about 85g, about 5–8 minutes. Cool completely before adding to dough.
+
+Cookie dough:
 - 115g butter, browned
 - 32g white miso (superfood, goalTags: gut health)
 - 100g coconut sugar (goalTags: gut health)
-- 60g maple sugar
+- 60g granulated sugar
 - 1 large egg yolk (goalTags: brain health)
 - ½ tsp vanilla extract
-- 85g cooked banana concentrate, cooled
-- 135g all-purpose flour
-- 45g oat flour (superfood, goalTags: heart health, gut health)
+- 85g cooled banana concentrate
+- 180g all-purpose flour
 - ½ tsp baking soda
-- 4 tbsp turbinado sugar, for rolling — all turbinado, no granulated
+
+For rolling:
+- 2 Tbsp turbinado sugar + 2 Tbsp granulated sugar
 
 Method:
-Mash banana in a small pan. Cook over medium heat, stirring often, until thick and jammy, about 85g. Cool completely.
-Brown the butter until it foams, smells nutty, and milk solids turn golden. Scrape into a bowl with the browned bits. Cool 10 minutes.
-Whisk miso into warm butter until smooth. Add coconut sugar, maple sugar, and 1 tsp water. Whisk 30–60 seconds. Add egg yolk, vanilla, and banana concentrate. Whisk until smooth and glossy.
-Add the AP flour, oat flour, and baking soda. Fold gently until no dry flour remains. Do not overmix.
-Cover and chill at least 1 hour. For best flavor, chill 4–24 hours. If overnight, rest at room temperature 10–15 min before scooping.
-Heat oven to 350°F / 175°C. Scoop into 40–45g balls. Roll generously in turbinado sugar. Place a few inches apart on a parchment-lined metal baking sheet.
-Bake 7–8 min until puffed and edges begin to set. Remove and give the pan one firm slam on the counter to collapse the centers. Return 2–4 min until edges are golden and centers still look slightly soft. One more gentle tap if domed. Cool on pan 10 minutes.
+Brown the butter until it foams, smells nutty, and milk solids turn golden. Scrape into a bowl with all the browned bits. Cool 10 minutes until warm but not hot.
+Whisk miso into warm brown butter until smooth. Add coconut sugar, granulated sugar, and 1 tsp water. Whisk 30–60 seconds. Add egg yolk, vanilla, and banana concentrate. Whisk until smooth and glossy.
+Add flour and baking soda. Fold gently until no dry flour remains. Dough should be soft and slightly sticky. Do not overmix.
+Cover and chill at least 1 hour. For best flavor chill 4–24 hours. If overnight, rest at room temperature 10–15 minutes before scooping.
+Heat oven to 350°F / 175°C. Line a metal baking sheet with parchment. Mix turbinado and granulated sugar in a small bowl. Scoop into 40–45g balls, roll in sugar mixture, place a few inches apart.
+Pan-slam technique: bake 7–8 minutes until puffed and edges begin to set. Remove and give the pan one firm slam on the counter to collapse the centers. Return 2–4 minutes until edges are golden and centers still look slightly soft. One more gentle tap if still too domed. Cool on pan 10 minutes, then transfer to a rack.
 
 Key swaps:
-- White granulated sugar (dough) → coconut sugar + maple sugar: lower glycemic, trace minerals, maple sugar behaves identically to white sugar in dough
-- Cream of tartar + 2 full eggs → egg yolk only + banana concentrate: yolk carries all the richness and fat-soluble vitamins; banana concentrate replaces binding moisture and adds natural sweetness and depth
-- 45g AP flour → 45g oat flour (keep 135g AP): beta-glucan in oat flour retains moisture and improves chewiness
-- Rolling sugar (granulated) → all turbinado: larger crystals create a crunchier, more pronounced outer crust
+- White granulated sugar (dough) → coconut sugar + granulated: coconut sugar adds caramel depth; less total sugar than the original snickerdoodle
+- Cream of tartar + 2 full eggs → egg yolk only + banana concentrate: yolk carries richness and fat-soluble vitamins; banana concentrate provides binding, moisture, and natural sweetness
+- Brown butter + white miso: brown butter has more flavor than plain butter and justifies less sugar; miso deepens the caramel note invisibly
+- Rolling sugar → turbinado + granulated mix: turbinado adds crunch; granulated helps the coating adhere evenly
 
 ## Cheesecake → Ube No-Bake Cheesecake
 
@@ -447,41 +574,42 @@ Key swaps:
 Ingredients: 1½ cups graham cracker crumbs, 3 tbsp sugar, 6 tbsp melted butter (crust); 4 × 8 oz cream cheese softened, 1¼ cups sugar, 4 large eggs, 1 cup sour cream, 1 tsp vanilla, zest of 1 lemon (filling).
 Method: Combine crust ingredients and press into 9" springform. Bake crust 10 min at 325°F. Beat cream cheese and sugar until smooth. Add eggs one at a time. Stir in sour cream, vanilla, lemon zest. Pour over crust. Bake in water bath at 325°F ~65 minutes. Cool in oven 1 hour. Refrigerate overnight.
 
-**Bake it miso version (Ube No-Bake Cheesecake, 6" springform, serves 6–8):**
+**Bake it miso version (Make It Miso Ube Cashew Cheesecake, 8" springform, serves 10–12):**
 
-No oven. No eggs. Sets overnight in the refrigerator.
+No oven. No eggs. Sets overnight in the refrigerator. The Cashew Cream Cheese must be prepared 12–24 hours ahead — note this clearly in the method.
 
-Crust ingredients:
-- 1 cup (100g) almond flour (superfood, goalTags: heart health, brain health)
-- 2 tbsp date sugar
-- 3 tbsp melted coconut oil
-- Pinch of salt
+Crust:
+- 1½ cups almonds (or almond flour) (superfood, goalTags: heart health, brain health)
+- 8 Medjool dates, pitted (superfood, goalTags: gut health, brain health)
+- 2 Tbsp melted coconut oil
+- ¼ tsp salt
+Pulse almonds until finely ground. Add dates, coconut oil, and salt. Process until mixture holds together when squeezed. Press firmly and evenly into an 8" springform pan. Chill while preparing filling.
 
-Filling ingredients:
-- 8 oz (225g) vegan cream cheese, room temperature — coconut oil-based, plain, cream cheese style (not spreadable tub) (goalTags: gut health)
-- 1 can (400ml) full-fat coconut cream, refrigerated overnight — use only the solid cream on top (superfood, goalTags: gut health)
-- 3 tbsp ube powder (superfood, goalTags: brain health)
-- 3 tbsp pure maple syrup
+Filling:
+- 18 oz (510g) Cashew Cream Cheese (see sub-recipe — prepare 12–24 hours ahead) (superfood, goalTags: gut health, brain health)
+- ½ cup full-fat coconut cream (superfood, goalTags: gut health)
+- 3 Tbsp ube powder (superfood, goalTags: brain health)
 - 1 tsp vanilla extract
-- 1½ tsp agar-agar powder dissolved in 3 tbsp hot water, cooled slightly
-- Pinch of salt
+- 3 Tbsp maple syrup
+- 1 Tbsp calamansi juice (or lemon juice)
+- 1 Tbsp lemon juice
+- Pinch salt
+- 2 Tbsp refined coconut oil, melted
+- 2 tsp agar powder + ¼ cup water
 
 Method:
-Mix almond flour, date sugar, coconut oil, and salt until it holds when pressed. Press firmly and evenly into the base of a 6" springform pan. Refrigerate 20 minutes.
-Beat vegan cream cheese until smooth. Add the solid coconut cream and beat until fully combined. Add ube powder, maple syrup, vanilla, and salt. Mix until evenly violet and creamy.
-Dissolve agar-agar in 3 tbsp hot water, stir until fully dissolved, and let cool 2 minutes. Whisk quickly into the filling.
-Pour filling over the chilled crust. Smooth the top. Cover and refrigerate overnight (minimum 8 hours) until fully set.
-Run a thin knife around the edge before unclipping the springform. Slice with a warm knife. Serves 6–8.
-
-storeBought for vegan cream cheese: descriptor "Vegan cream cheese block or sticks", criteria: ["coconut oil-based — not soy or nut-based", "plain/unflavored", "firm block or stick format — not spreadable tub style"].
+Blend cashew cream cheese, coconut cream, maple syrup, vanilla, ube powder, calamansi juice, lemon juice, salt, and melted coconut oil until completely smooth and silky — no lumps.
+Activate agar: combine agar powder and ¼ cup water in a small saucepan. Bring to a simmer, cook 2–3 minutes whisking continuously. Agar must briefly boil to fully hydrate — if it doesn't boil the cheesecake will not set.
+With blender running, slowly stream in the hot agar mixture. Blend 20–30 seconds only.
+Pour immediately into the prepared crust. Tap the pan several times on the counter to release bubbles. Smooth the top.
+Refrigerate overnight (minimum 8 hours). Run a thin knife around the edge before unclipping. Slice with a warm knife.
 
 Key swaps:
-- Graham cracker crust → almond flour + date sugar + coconut oil: higher protein, fiber, and healthy fats; sets cleanly in the refrigerator; lets the ube color dominate visually
-- Cream cheese (32 oz dairy) → vegan cream cheese + coconut cream: plant-based, dairy-free; coconut cream sets firm when chilled and adds richness; no eggs needed
-- Eggs (4 large) → agar-agar: plant-based gelling agent sets the cheesecake without eggs or heat; no water bath, no cracking, no oven required
-- White sugar (1¼ cups) → maple syrup (3 tbsp): ube powder adds flavor and color without extra sweetness; maple syrup is all the sweetener the filling needs
-- Baked at 325°F in water bath → sets overnight in refrigerator: cold-set produces a creamier texture and requires no oven time
-- 9" pan → 6" springform: scaled for 6–8 servings; a taller, more elegant slice
+- Graham cracker crust → almond + Medjool date crust: whole-food base; higher protein, fiber, and healthy fats; sets cleanly without baking; lets the violet ube color dominate visually
+- Dairy cream cheese (32 oz) → Cashew Cream Cheese: fermented, probiotic-rich, genuinely tangy — not a compromise; combined with coconut cream it produces a silkier texture than a baked cheesecake
+- Eggs (4 large) → agar-agar: plant-based gelling agent; sets without heat, no water bath, no cracking, no oven required
+- White sugar (1¼ cups) → maple syrup (3 Tbsp): ube powder carries the flavor and color; far less sweetener needed
+- Baked water bath → overnight refrigerator set: cold-set is creamier and requires zero oven time
 
 ## Coconut Sorbet → Coconut Butterfly Pea Sorbet | serves 4–6
 
@@ -509,6 +637,78 @@ Key swaps:
 - White sugar → maple syrup: lower glycemic; the coconut cream carries the body so less sweetener is needed
 - Artificial color → butterfly pea flower tea: natural blue-violet from an antioxidant flower; no flavor impact — purely visual
 - Passion fruit as topping only: in the base it overwhelms the delicate coconut flavor. Fresh pulp drizzled over the butterfly pea base at serving shifts the color from blue to vivid violet on contact — beautiful and controlled, the coconut stays dominant
+
+## Coconut sorbet variation → Coconut Pandan Sorbet | serves 6–8
+
+Use this version when the user specifies pandan, or when serving alongside Mango Sago. The pandan version has body from tapioca starch and young coconut — richer and more traditional than the butterfly pea version.
+
+Ingredients:
+- 1 can (400ml) full-fat coconut milk (superfood, goalTags: gut health)
+- 1 cup coconut water
+- 100g palm sugar, chopped or grated
+- 50–60g light corn syrup or glucose syrup
+- 2 pandan leaves, bruised and tied in a knot
+- ¼ tsp salt
+- 1 tsp tapioca starch mixed with 1 Tbsp coconut water
+- 1–2 tsp lime or calamansi juice
+- ½ cup young coconut meat, thinly sliced or finely diced
+
+Method:
+Warm coconut water, palm sugar, corn syrup, pandan leaves, and salt in a saucepan until sugar dissolves — do not boil hard. Steep pandan 15–20 minutes, then remove. Whisk in coconut milk. Add tapioca starch slurry and bring just barely to a simmer for 30–60 seconds until the mixture slightly tightens — it should not become pudding-like, only lightly bodied. Cool completely. Chill overnight. Before churning, stir in lime juice. The base should taste slightly sweeter than desired — freezing dulls sweetness. Churn in an ice cream maker per manufacturer instructions. Add young coconut during the final minute of churning, or fold in after. Freeze until scoopable. Serve as a scoop alongside Mango Sago or on its own.
+
+## Key lime pie → Avocado Key Lime Pie | 9" pie dish · serves 8
+
+The avocado replaces condensed milk and egg yolks — same silky, rich filling, but with healthy fats and no dairy. Use classic key lime pie (condensed milk, egg yolks, lime juice, graham cracker crust) for the original nutrition comparison.
+
+Pecan Crust:
+- 1 cup raw pecans (superfood, goalTags: heart health, brain health)
+- 8 Medjool dates, pitted (superfood, goalTags: gut health)
+- 1 tsp coconut oil
+- Pinch salt
+- ⅛ tsp vanilla extract
+Grease a 9" pie dish lightly with coconut oil. Blend pecans, dates, coconut oil, salt, and vanilla in a food processor with a tiny amount of water until the mixture holds when pressed. Press firmly into the bottom and up the sides of the pie dish. Refrigerate while making filling.
+
+Filling:
+- 1½ cups (about 2 large) ripe avocado (superfood, goalTags: heart health, brain health)
+- 1 cup fresh lime juice (about 8–10 limes)
+- ⅔ cup full-fat coconut milk
+- 3 Tbsp maple syrup (adjust to taste — limes vary in tartness)
+- ¼ tsp salt
+- 2 tsp agar powder + 3 Tbsp water (for setting)
+- Zest of 2 limes
+
+Blend avocado, lime juice, coconut milk, maple syrup, salt, and lime zest until completely smooth and silky — no green flecks. Taste and adjust lime juice and maple syrup. Activate agar: combine agar and 3 Tbsp water in a small saucepan, bring to a boil, simmer 2 minutes whisking constantly. Stream hot agar into running blender, blend 15 seconds. Pour immediately into chilled crust. Refrigerate at least 4 hours or overnight until fully set. Serve with a thin slice of lime and a pinch of flaky salt.
+
+Key swaps:
+- Graham cracker crust → pecan + Medjool date crust: richer flavor, higher fiber and healthy fats, no refined flour or butter
+- Condensed milk + egg yolks → avocado + coconut milk: avocado provides the same creamy, rich body with healthy monounsaturated fats; no raw eggs, no dairy
+- White sugar → maple syrup: less sweetener needed; the lime tartness carries the flavor
+- Oven-baked → refrigerator-set with agar: no heat required; sets cleaner and stays silkier when cold
+
+## Default base recipes
+
+### Pancake (gluten-free)
+- 250g AP gluten-free flour
+- ¼ cup tapioca flour
+- 1 tsp baking powder
+- 1 tsp baking soda
+- ¼ tsp salt
+- ½ cup (130g) mashed ripe banana (superfood)
+- 1 cup almond milk
+- 2 Tbsp liquid coconut oil
+- 3 Tbsp maple syrup
+- 2 tsp apple cider vinegar
+Whisk dry ingredients. Whisk wet ingredients separately, then combine. Rest 5 minutes before cooking. Cook on a lightly oiled skillet over medium heat.
+
+### Crepe (gluten-free)
+- ½ cup almond milk
+- ½ cup sweet rice flour
+- ½ cup chickpea flour
+- 1 Tbsp coconut sugar
+- 1 egg
+- 1 Tbsp melted coconut oil
+- Pinch salt
+Whisk all ingredients until smooth. Rest 10 minutes. Cook in a lightly oiled non-stick pan over medium heat, swirling to coat thinly. Cook 1–2 minutes per side.
 
 # Output format — strict
 
@@ -573,4 +773,5 @@ Return ONLY a single JSON object with this exact shape (no markdown, no commenta
 - Include 3–6 swap entries — the ones actually applied, plus any "kept as original" decisions that the user should know about.
 - For ingredients kept by the integrity rule, use: "from": "[ingredient]", "to": "kept as original", "why": "plain explanation of what would have changed and why the original is the better call here". Write the why in plain, direct language — not apologetic, just honest.
 - No emoji. No markdown inside JSON strings. Plain text only.
-- NEVER recommend brand names in storeBought. Descriptor + criteria only.`;
+- NEVER recommend brand names in storeBought. Descriptor + criteria only.
+- BE CONCISE. Every string field under 60 words. Method steps: one clear sentence each. No filler phrases. This is critical — verbose output wastes tokens and breaks parsing.`;
