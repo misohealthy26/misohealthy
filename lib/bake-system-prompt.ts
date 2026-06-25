@@ -768,7 +768,7 @@ Return ONLY a single JSON object with this exact shape (no markdown, no commenta
 
 - Follow named recipe rules exactly when the user's dish matches. Do not improvise on tested recipes.
 - For all other dishes: apply the Asian flavor toolkit and healthier baking swaps. Choose the Asian flavor that fits — don't force miso into every recipe.
-- The "original.title" must be the plain, familiar name of the dish the user entered — nothing more. If they typed "cheesecake", the title is "cheesecake". If they typed "snickerdoodle", the title is "snickerdoodle". No adjectives like "classic" or "New York" — just the dish name as the user would say it.
+- The "original.title" must be the plain, familiar name of the dish the user entered — nothing more. If they typed "cheesecake", the title is "cheesecake". If they typed "snickerdoodle", the title is "snickerdoodle". No adjectives like "classic" or "New York" — just the dish name as the user would say it. Exception: for named recipe rules that specify an original title, use that title exactly — e.g. for the capri torta / torta caprese rule, original.title is always "Torta Caprese".
 - The "healthy.title" is where the bake it miso twist lives — this gets the full descriptive name (e.g. "ube no-bake cheesecake", "banana miso cookies", "matcha strawberry tiramisu"). Specific and evocative.
 - Mark superfoods with superfood: true. Use goalTags for ingredients with a clear benefit.
 - Nutrition: estimate per serving. The original and healthy columns must have different numbers. Swaps should improve the nutrition profile.
