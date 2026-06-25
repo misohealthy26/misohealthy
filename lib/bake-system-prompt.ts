@@ -203,37 +203,6 @@ This is Eda's personal recipe — follow it precisely. It is a cross between a c
 - Added cardamom and orange blossom water (botanical lift that complements the blood orange without overpowering)
 - Crushed pistachios on top (healthy fat, color contrast, textural crunch)
 
-## Caprese torta → Persimmon Chocolate Almond Cake | 8" springform · serves 8–10
-
-No butter. No AP flour. The persimmon replaces both added sugar and moisture — use only Hachiya persimmons (the elongated kind) at full ripeness, when the flesh is translucent and spoon-soft. Under-ripe Hachiya is astringent and will ruin the cake. Use classic Italian caprese torta (almond flour, dark chocolate, butter, eggs, sugar) for the original nutrition comparison.
-
-Dry:
-- 2 cups (200g) almond flour (superfood, goalTags: heart health, brain health)
-- ¼ cup (25g) unsweetened cacao powder (superfood, goalTags: brain health, heart health)
-- 1 tsp baking powder
-- ¼ tsp salt
-- 1 Tbsp ground flax (superfood, goalTags: heart health, gut health)
-
-Wet:
-- 3 whole eggs + 2 egg whites
-- ½ cup (120g) very ripe Hachiya persimmon purée — spoon-soft only (goalTags: brain health)
-- ⅓ cup maple syrup
-- 3 Tbsp extra virgin olive oil
-- 1 tsp vanilla extract
-- ½–1 tsp finely grated yuzu zest (or lemon zest)
-- 1 tsp espresso powder dissolved in 1 tsp hot water (optional — deepens chocolate)
-
-Chocolate:
-- 80–100g dark chocolate (70–85%), melted and slightly cooled (superfood, goalTags: brain health, heart health)
-
-Method: Preheat oven to 325°F. Grease or line an 8" springform pan. Combine all dry ingredients in a bowl. In a separate bowl whisk all wet ingredients until smooth. Fold dry into wet. Add melted chocolate and fold until just incorporated — do not overmix. Pour into pan. Bake 30–40 minutes until edges are set and the center is slightly soft (fudgy texture is correct for this cake). Cool completely in the pan — it will firm up. Chill 2–4 hours before slicing for cleanest cuts.
-
-Key swaps:
-- Butter → olive oil (heart-healthy fat, keeps the crumb moist)
-- White sugar → persimmon purée + maple syrup (persimmon provides natural sweetness and moisture; much less added sugar than the original)
-- AP flour → almond flour + ground flax (gluten-free; almond flour gives the dense, fudgy crumb caprese is known for; flax adds fiber invisibly)
-- Added yuzu zest (lifts the chocolate without competing)
-
 ## Meringue / Pavlova → Yuzu Passion Fruit Pavlova | 9–10" disc · serves 8
 The meringue base requires egg whites and sugar — these are non-negotiable for structure. Do not swap them out.
 - Reduce white sugar by 10–15% at most — any more and the meringue will weep or collapse
@@ -526,6 +495,37 @@ The phyllo layers stay — they're already thin and not the issue. The swap is i
 # Named recipe rules
 
 When the user enters one of these dishes (or close variants), apply these specific transformations. These are fully tested recipes — follow them precisely. Do not improvise on named rules.
+
+## Capri torta / Torta Caprese → Persimmon Chocolate Almond Cake | 8" springform · serves 8–10
+
+No butter. No AP flour. The persimmon replaces both added sugar and moisture — use only Hachiya persimmons (the elongated kind) at full ripeness, when the flesh is translucent and spoon-soft. Under-ripe Hachiya is astringent and will ruin the cake. Use classic Italian capri torta (almond flour, dark chocolate, butter, eggs, sugar) for the original nutrition comparison.
+
+Dry:
+- 2 cups (200g) almond flour (superfood, goalTags: heart health, brain health)
+- ¼ cup (25g) unsweetened cacao powder (superfood, goalTags: brain health, heart health)
+- 1 tsp baking powder
+- ¼ tsp salt
+- 1 Tbsp ground flax (superfood, goalTags: heart health, gut health)
+
+Wet:
+- 3 whole eggs + 2 egg whites
+- ½ cup (120g) very ripe Hachiya persimmon purée — spoon-soft only (goalTags: brain health)
+- ⅓ cup maple syrup
+- 3 Tbsp extra virgin olive oil
+- 1 tsp vanilla extract
+- ½–1 tsp finely grated yuzu zest (or lemon zest)
+- 1 tsp espresso powder dissolved in 1 tsp hot water (optional — deepens chocolate)
+
+Chocolate:
+- 80–100g dark chocolate (70–85%), melted and slightly cooled (superfood, goalTags: brain health, heart health)
+
+Method: Preheat oven to 325°F. Grease or line an 8" springform pan. Combine all dry ingredients in a bowl. In a separate bowl whisk all wet ingredients until smooth. Fold dry into wet. Add melted chocolate and fold until just incorporated — do not overmix. Pour into pan. Bake 30–40 minutes until edges are set and the center is slightly soft (fudgy texture is correct for this cake). Cool completely in the pan — it will firm up. Chill 2–4 hours before slicing for cleanest cuts.
+
+Key swaps:
+- Butter → olive oil (heart-healthy fat, keeps the crumb moist)
+- White sugar → persimmon purée + maple syrup (persimmon provides natural sweetness and moisture; much less added sugar than the original)
+- AP flour → almond flour + ground flax (gluten-free; almond flour gives the dense, fudgy crumb the capri torta is known for; flax adds fiber invisibly)
+- Added yuzu zest (lifts the chocolate without competing)
 
 ## Snickerdoodle → Banana Miso Cookies
 
