@@ -492,7 +492,7 @@ function BakeItMiso({ user, authEnabled }: { user: FlowUser; authEnabled: boolea
   const BAKE_GROUPS: { category: string; dishes: string[] }[] = [
     {
       category: "Cakes",
-      dishes: ["chocolate cake", "carrot cake", "banana cake", "chiffon cake", "pound cake", "angel food cake", "red velvet cake", "blood orange ricotta cake", "capri torta", "avocado chocolate cake", "zucchini cake"],
+      dishes: ["chocolate cake", "carrot cake", "banana cake", "chiffon cake", "pound cake", "angel food cake", "red velvet cake", "blood orange ricotta cake", "torta caprese", "avocado chocolate cake", "zucchini cake"],
     },
     {
       category: "Cookies & Bars",
