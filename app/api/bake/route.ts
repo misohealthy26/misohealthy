@@ -151,6 +151,17 @@ export async function POST(request: Request) {
         .upsert({ user_id: userId, date: today, count: currentCount + 1 });
     }
 
+    // Override original titles for named rules so the proper name always appears
+    const namedRuleTitles: Record<string, string> = {
+      "capri torta": "Torta Caprese",
+      "torta caprese": "Torta Caprese",
+      "caprese torta": "Torta Caprese",
+    };
+    const canonicalTitle = namedRuleTitles[dish.toLowerCase()];
+    if (canonicalTitle && parsed && typeof parsed === "object" && "original" in parsed) {
+      (parsed as Record<string, Record<string, string>>).original.title = canonicalTitle;
+    }
+
     return Response.json(parsed);
   } catch (err) {
     console.error("/api/bake error:", err);
