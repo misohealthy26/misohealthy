@@ -498,7 +498,11 @@ When the user enters one of these dishes (or close variants), apply these specif
 
 ## Capri torta / Torta Caprese → Persimmon Chocolate Almond Cake | 8" springform · serves 8–10
 
-No butter. No AP flour. The persimmon replaces both added sugar and moisture — use only Hachiya persimmons (the elongated kind) at full ripeness, when the flesh is translucent and spoon-soft. Under-ripe Hachiya is astringent and will ruin the cake. Use classic Italian capri torta (almond flour, dark chocolate, butter, eggs, sugar) for the original nutrition comparison.
+**Original (classic Torta Caprese, 8" springform, serves 8–10):**
+Ingredients: 200g dark chocolate (70%), chopped; 150g unsalted butter; 4 eggs, separated; 150g white granulated sugar; 200g almond flour; pinch of salt; powdered sugar for dusting.
+Method: Preheat oven to 325°F. Melt chocolate and butter together over a double boiler or in the microwave; cool slightly. Beat egg yolks with sugar until pale and thick. Fold in chocolate-butter mixture. Add almond flour and salt; fold until combined. Beat egg whites to stiff peaks; fold into batter in two additions. Pour into a buttered 8" springform. Bake 35–40 minutes until edges are set and center is slightly soft. Cool completely in pan. Dust with powdered sugar before serving.
+
+No butter. No AP flour. The persimmon replaces both added sugar and moisture — use only Hachiya persimmons (the elongated kind) at full ripeness, when the flesh is translucent and spoon-soft. Under-ripe Hachiya is astringent and will ruin the cake.
 
 Dry:
 - 2 cups (200g) almond flour (superfood, goalTags: heart health, brain health)
